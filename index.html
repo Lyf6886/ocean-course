@@ -167,12 +167,16 @@ em{font-style:normal}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .stage-head{display:flex;align-items:center;gap:.9rem;padding:.85rem clamp(14px,1.8vw,30px) .7rem;border-bottom:1px solid var(--line);
   background:linear-gradient(180deg,rgba(6,26,42,.55),transparent)}
-.stage-no{flex:none;width:2.7rem;height:2.7rem;border-radius:10px;display:grid;place-items:center;
-  font-family:var(--serif);font-weight:900;font-size:1.35rem;color:#20160a;
+.stage-no{flex:none;width:3.4rem;height:3.4rem;border-radius:12px;display:grid;place-items:center;
+  font-family:var(--serif);font-weight:900;font-size:1.8rem;color:#20160a;
   background:linear-gradient(135deg,var(--gold),var(--golddeep));box-shadow:0 8px 22px rgba(245,199,107,.25)}
 .stage-head .sh-main{flex:1;min-width:0}
-.stage-head h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.15rem,1.8vw,1.6rem);letter-spacing:.01em}
-.stage-head .sh-sub{color:var(--faint);font-size:.84rem;margin-top:.05rem}
+.stage-head h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.55rem,2.5vw,2.2rem);letter-spacing:.01em}
+/* 页头问题小字：红色括号，随主标题同行基线对齐，副标题整行换行 */
+.sh-main{display:flex;align-items:baseline;flex-wrap:wrap;gap:.3rem .5rem;min-width:0}
+.sh-main .sh-sub{flex:1 1 100%;margin:0}
+.sh-q{color:#ff8a75;font-weight:800;font-size:clamp(.88rem,1.5vw,1.22rem);letter-spacing:.01em;white-space:nowrap}
+.stage-head .sh-sub{color:var(--faint);font-size:1.15rem;margin-top:.05rem}
 .stage-head .sh-side{display:flex;gap:.45rem;flex-wrap:wrap;justify-content:flex-end}
 .crack-badge{display:inline-flex;align-items:center;gap:.35rem;border-radius:var(--r-pill);padding:.3rem .75rem;
   font-size:.78rem;font-weight:800;border:1px dashed rgba(245,199,107,.55);background:rgba(245,199,107,.1);color:var(--gold);cursor:pointer}
@@ -312,6 +316,21 @@ em{font-style:normal}
 .badge.ok{color:#c2f4e0;border-color:rgba(87,214,163,.5);background:rgba(87,214,163,.14)}
 .rulebar{display:flex;align-items:center;gap:.7rem;padding:.66rem .95rem;border-radius:var(--r-md);
   border-left:3px solid var(--gold);background:rgba(245,199,107,.09);margin:.45rem 0}
+/* 结案报告三步推演 */
+.answer-steps{display:flex;flex-direction:column;gap:.55rem;margin:.4rem 0}
+.a-step{display:flex;align-items:flex-start;gap:.7rem}
+.a-step .as-no{flex:none;width:1.7rem;height:1.7rem;border-radius:50%;display:grid;place-items:center;
+  font-family:var(--serif);font-weight:900;font-size:.92rem;color:var(--gold);border:1.5px solid rgba(245,199,107,.55);
+  background:rgba(245,199,107,.12);margin-top:.15rem}
+.a-step p{font-size:1.08rem;line-height:1.75;color:var(--foam);margin:0}
+.a-step p b{color:var(--gold)}
+/* 等温线示意图：点击洋流线揭晓答案（默认只显示 ? 占位） */
+.cur-g .cur-ans{opacity:0;transition:opacity .45s;pointer-events:none}
+.cur-g.open .cur-ans{opacity:1}
+.cur-g .cur-q{transition:opacity .3s}
+.cur-g.open .cur-q{opacity:0}
+.cur-g:hover line{stroke-width:6.5}
+.cur-g line{transition:stroke-width .2s}
 .rulebar.warm{border-color:var(--warm);background:rgba(255,122,89,.1)}
 .rulebar.cold{border-color:var(--cold);background:rgba(73,194,245,.1)}
 .rulebar .rk{font-family:var(--serif);font-weight:900;font-size:1rem;color:var(--gold);white-space:nowrap}
@@ -532,9 +551,11 @@ em{font-style:normal}
   background:linear-gradient(180deg,rgba(6,26,42,.9),rgba(3,16,28,.95));overflow:hidden}
 .rc-strip{position:absolute;left:0;right:0;top:0;will-change:transform}
 .rc-cell{height:5.5rem;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;
-  font-size:3.5rem;color:var(--foam);font-variant-numeric:tabular-nums;line-height:1}
+  font-size:2.2rem;color:var(--mist);font-variant-numeric:tabular-nums;line-height:1;
+  transition:font-size .28s ease, color .28s ease, text-shadow .28s ease}
+.rc-stage.locked .rc-cell.hit{font-size:5rem;color:var(--gold);text-shadow:0 0 30px rgba(245,199,107,.5)}
 .rc-win{position:absolute;left:6%;right:6%;top:50%;height:5.5rem;transform:translateY(-50%);pointer-events:none;z-index:2;
-  border-top:2px solid rgba(245,199,107,.6);border-bottom:2px solid rgba(245,199,107,.6)}
+  border-top:2.5px solid rgba(245,199,107,.75);border-bottom:2.5px solid rgba(245,199,107,.75);box-shadow:0 0 18px rgba(245,199,107,.18)}
 .rc-fadet,.rc-fadeb{position:absolute;left:0;right:0;height:38%;pointer-events:none;z-index:2}
 .rc-fadet{top:0;background:linear-gradient(180deg,rgba(3,16,28,.98),transparent)}
 .rc-fadeb{bottom:0;background:linear-gradient(0deg,rgba(3,16,28,.98),transparent)}
@@ -556,13 +577,17 @@ em{font-style:normal}
 #inkCanvas{position:fixed;inset:0;z-index:118;display:none;pointer-events:none}
 #inkCanvas.show{display:block}
 #inkCanvas.on{display:block;cursor:crosshair;pointer-events:auto}
-#inkBar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--footbar-h) + 14px);z-index:119;display:flex;align-items:center;gap:.4rem;
-  padding:.45rem .6rem;border-radius:var(--r-pill);background:rgba(3,16,28,.94);border:1px solid var(--line2);box-shadow:var(--shadow)}
-#inkBar button{border-radius:var(--r-pill);padding:.35rem .7rem;font-size:.82rem;font-weight:800;color:var(--mist)}
+#inkBar{position:fixed;left:10px;top:50%;transform:translateY(-50%);z-index:119;display:flex;flex-direction:column;align-items:center;gap:.4rem;
+  padding:.55rem .45rem;border-radius:1.3rem;background:rgba(3,16,28,.94);border:1px solid var(--line2);box-shadow:var(--shadow);
+  max-height:calc(100vh - 20px);overflow-y:auto;overflow-x:hidden}
+/* 标准档且档案栏可见时，竖条让开左栏；投影档/已收起时贴最左侧 */
+html:not(.fs1):not(.fs2):not(.dockhide) #inkBar{left:316px}
+#inkBar button{border-radius:var(--r-pill);padding:.3rem .55rem;font-size:.8rem;font-weight:800;color:var(--mist);white-space:nowrap}
 #inkBar button:hover{color:var(--foam);background:var(--glass)}
 #inkBar button.on{background:rgba(245,199,107,.18);color:var(--gold)}
-#inkBar .sep{width:1px;height:1.2rem;background:var(--line2)}
-#inkBar .ink-stage{font-size:.78rem;font-weight:800;color:var(--gold);background:rgba(245,199,107,.1);border-radius:var(--r-pill);padding:.32rem .62rem;white-space:nowrap}
+#inkBar .sep{width:1.15rem;height:1px;background:var(--line2)}
+#inkBar .ink-stage{writing-mode:vertical-rl;font-size:.76rem;font-weight:800;color:var(--gold);background:rgba(245,199,107,.1);
+  border-radius:var(--r-pill);padding:.5rem .3rem;letter-spacing:.08em}
 #detail{position:fixed;inset:0;z-index:126;display:none;align-items:center;justify-content:center;padding:18px;
   background:rgba(2,6,10,.78);backdrop-filter:blur(8px)}
 #detail.show{display:flex}
@@ -612,6 +637,23 @@ em{font-style:normal}
 .kc-node .kc-t{font-weight:900;font-size:.95rem}
 .kc-node .kc-d{color:var(--faint);font-size:.76rem;margin-top:.2rem;line-height:1.5}
 .kc-arrow{align-self:center;color:var(--gold);font-weight:900;flex:none}
+/* ============ 地图放大绘图层 ============ */
+#mapZoom{position:fixed;inset:0;z-index:320;background:rgba(3,9,15,.97);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:.7rem;padding:1rem 1rem 1.2rem}
+#mapZoom[hidden]{display:none}
+#mapZoom .mz-tip{font-size:.95rem;color:var(--faint);letter-spacing:.05em;text-align:center}
+#mapZoom .mz-box{position:relative;width:min(97vw,calc((100vh - 9rem)*820/470));aspect-ratio:820/470;
+  border-radius:10px;overflow:hidden;box-shadow:0 18px 70px rgba(0,0,0,.6);background:#0a1a28}
+#mapZoom .mz-box>svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+#mapZoom #mzCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+#mapZoom .mz-bar{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;justify-content:center;
+  background:var(--glass);border:1px solid var(--line2);border-radius:999px;padding:.42rem .85rem;max-width:97vw}
+#mapZoom .mz-ink{width:1.55rem;height:1.55rem;border-radius:50%;border:2px solid rgba(255,255,255,.28);cursor:pointer;padding:0;transition:.15s}
+#mapZoom .mz-ink.on{border-color:var(--gold);transform:scale(1.2);box-shadow:0 0 0 3px rgba(245,199,107,.25)}
+#mapZoom .mz-sep{width:1px;height:1.4rem;background:var(--line2)}
+#mapZoom .mz-sz{border:1px solid var(--line2);background:transparent;color:var(--mist);border-radius:999px;
+  padding:.22rem .8rem;cursor:pointer;font-size:.85rem;transition:.15s}
+#mapZoom .mz-sz.on{border-color:var(--gold);color:var(--gold);background:rgba(245,199,107,.1)}
 #printSheet{display:none}
 @media print{
   body>*{display:none!important}
@@ -642,7 +684,131 @@ em{font-style:normal}
   .pages-merge{grid-template-columns:repeat(2,minmax(0,1fr))}
   .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-html.proj{font-size:clamp(17px,.55vw + 12px,22px)}
+/* PK 题卡双栏：左=题干+选项、右=配图（读图作答同屏完成，免滚动；窄屏回落单列图在下） */
+.quizbox.q-duo{position:relative;padding-right:43%}
+.quizbox.q-duo .qfig-side{position:absolute;right:1.1rem;top:50%;transform:translateY(-50%);width:40%;min-width:0}
+.quizbox.q-duo .qfig-side .figure{max-width:560px;margin:0 auto}
+.quizbox.q-duo .qfig-side svg{max-height:56vh}
+/* 投影档下 PK 选项两列化 + 窄屏（含手机）q-duo 回落单列图在下 */
+html.fs1 #quizbox .opts,html.fs2 #quizbox .opts{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:960px){
+  .quizbox.q-duo{padding-right:0}
+  .quizbox.q-duo .qfig-side{position:static;transform:none;width:auto;margin-top:.6rem}
+}
+/* 封面与序幕正文字号上调（sp-封面 / tl-案情卷宗时间轴 / figcaption-两石合读 / tb-cap-石刻译文与教材图读图要点） */
+body .sp-sub{font-size:clamp(1.05rem,1.8vw,1.35rem)}
+body .sp-tag{font-size:clamp(1.06rem,1.7vw,1.3rem);max-width:40rem}
+body .sp-hint{font-size:.95rem}
+body .tl-text{font-size:1.2rem}
+body .tl-date{font-size:1.02rem}
+body .figure figcaption{font-size:1.2rem}
+body .tb-cap{font-size:1.18rem}
+/* 全环节主内容区正文字号对齐（与序幕正文同档 1.2rem≈20px；徽章小字适度升档） */
+body #stage p:not([class]){font-size:1.2rem}
+body #stage p.sub{font-size:1.2rem}
+body #stage .rv{font-size:1.15rem}
+body #stage .opt .txt{font-size:1.2rem}
+body #stage .sq-b{font-size:1.3rem}
+body #stage .sq-t{font-size:1.1rem}
+body #stage .sq-f{font-size:.95rem}
+body #stage .cd-t{font-size:1.2rem}
+body #stage .qhint{font-size:1rem}
+body #stage .judge-fb{font-size:1.05rem}
+body .q-ask{font-size:1.25rem}
+body #stage .crack-badge{font-size:.92rem}
+body #stage .badge{font-size:.92rem}
+body #stage .crack-tag{font-size:.95rem}
+body #stage .stepchip{font-size:.95rem}
+body #stage .pg-no{font-size:.95rem}
+body #stage .mp-t{font-size:1.25rem}
+/* 陆·海流的指纹：影响四卡单独再放大（内联字号由 !important 覆盖） */
+body #stage-impact .card p[style*="font-size"]{font-size:1.35rem!important}
+body #stage-impact .card p:not([style]){font-size:1.35rem}
+body #stage-impact .card .h3{font-size:1.5rem}
+body #stage-impact .card .badge{font-size:1.05rem}
+/* 左栏收起（⇤ 收起按钮 / 顶栏档案按钮切换） */
+.dock-title{flex-wrap:wrap}
+.dock-title #dockHide{margin-left:auto;border:1px solid rgba(245,199,107,.4);background:rgba(6,24,40,.6);color:var(--gold);
+  font-size:.8rem;font-weight:800;padding:.15rem .5rem;border-radius:999px;cursor:pointer}
+.dock-title #dockHide:hover{background:rgba(245,199,107,.15)}
+html.dockhide #dock{display:none}
+/* PK 连击播报大字（Good/Great/Amazing/Unbelievable） */
+#pkComboFx{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(.3);z-index:200;
+  pointer-events:none;font-weight:900;letter-spacing:.04em;opacity:0;
+  font-size:clamp(3rem, 9vw, 7.5rem);text-shadow:0 4px 30px rgba(0,0,0,.55);
+  animation:pkCombo .16s cubic-bezier(.2,1.6,.4,1) forwards, pkComboOut .3s ease-in 1.3s forwards}
+#pkComboFx.lv0{color:#7fe3ff}
+#pkComboFx.lv1{color:var(--gold,#f5c76b);font-size:clamp(3.2rem,9.5vw,8rem)}
+#pkComboFx.lv2{color:#a4f7a0;font-size:clamp(3.4rem,10vw,8.5rem)}
+#pkComboFx.lv3{color:#ff9d5c;font-size:clamp(3.6rem,11vw,9.5rem)}
+@keyframes pkCombo{to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes pkComboOut{to{opacity:0;transform:translate(-50%,-52%) scale(1.15)}}
+/* 专注全屏：中间内容独占屏幕（顶栏/底栏/左右栏隐藏），字号嵌套再放大 ×1.25 */
+#zenBtn{position:fixed;right:14px;bottom:calc(var(--footbar-h) + 12px);z-index:110;width:46px;height:46px;border-radius:50%;
+  border:1px solid rgba(245,199,107,.45);background:rgba(6,24,40,.82);color:var(--gold);font-size:1.25rem;cursor:pointer;
+  backdrop-filter:blur(6px);transition:.2s}
+#zenBtn:hover{background:rgba(245,199,107,.18);transform:scale(1.08)}
+/* 专注模式专属批注钮：与 ⛶ 同层叠放在它上方，仅 zen 时可见 */
+#zenInkBtn{position:fixed;right:14px;bottom:calc(var(--footbar-h) + 12px + 58px);z-index:110;width:46px;height:46px;border-radius:50%;
+  border:1px solid rgba(245,199,107,.45);background:rgba(6,24,40,.82);color:var(--gold);font-size:1.15rem;cursor:pointer;
+  backdrop-filter:blur(6px);transition:.2s}
+#zenInkBtn:hover{background:rgba(245,199,107,.18);transform:scale(1.08)}
+#zenInkBtn.on{background:rgba(245,199,107,.25);border-color:var(--gold);color:var(--gold)}
+html:not(.zen) #zenInkBtn{display:none}
+html.zen #topbar,html.zen #footbar,html.zen #rail,html.zen #dock{display:none!important}
+html.zen #zenBtn{border-color:rgba(255,122,89,.55);color:#ffb09b}
+html.zen .stage-body{zoom:1.25}
+/* 左栏文字放大（仅字号，容器宽度与三栏比例不变） */
+.dock-title{font-size:1.32rem}
+.dock-sec h4{font-size:1rem}
+.stat-chip b{font-size:1.35rem}
+.stat-chip span{font-size:.95rem}
+.pg-no{font-size:.85rem}
+.mp-t{font-size:1.28rem}
+.merge-pg small{font-size:.95rem}
+.myst{font-size:1.06rem}
+.myst .mt small{font-size:.92rem}
+.clue .cl-t{font-size:1.1rem}
+.clue-empty{font-size:1.04rem}
+/* 投影字号三档：标准 / 后排×1.75 / 极限×2.25（挂载在主内容容器，画布/弹窗坐标不受影响，批注坐标不变）
+   依据：60人教室后排约9m，86寸1080p一体机可读下限≈正文24px/题干32px——×1.75档中后排舒适、×2.25档最后一排可读 */
+html.fs1 .stage-body{zoom:1.85}
+html.fs2 .stage-body{zoom:2.4}
+/* 投影档版面扩展：解除 1180px 宽度封锁 + 压缩四周留白，内容占满一体机 */
+html.fs1 .stage-wrap,html.fs2 .stage-wrap{max-width:none}
+html.fs1 .stage-head,html.fs2 .stage-head{padding:.4rem .6rem .35rem}
+html.fs1 .stage-body,html.fs2 .stage-body{padding:.4rem .55rem .5rem}
+/* 投影档 PK 对局区：计分板与题卡左右并排（宽屏用宽度换高度，保题卡一屏） */
+html.fs1 #arenaPlay,html.fs2 #arenaPlay{display:grid;grid-template-columns:minmax(0,30%) minmax(0,1fr);gap:.7rem;align-items:start}
+html.fs1 #arenaPlay[hidden],html.fs2 #arenaPlay[hidden]{display:none!important}
+html.fs1 #arenaPlay>.truthbar,html.fs2 #arenaPlay>.truthbar{grid-column:1/-1;margin-top:0}
+html.fs1 #arenaPlay>#scoreboard,html.fs2 #arenaPlay>#scoreboard{margin-top:0}
+html.fs1 #arenaPlay>#quizbox,html.fs2 #arenaPlay>#quizbox{margin-top:0}
+html.fs1 #arenaPlay>.rowbtns,html.fs2 #arenaPlay>.rowbtns{grid-column:1/-1}
+@media (max-width:960px){
+  html.fs1 #arenaPlay,html.fs2 #arenaPlay{display:block}
+  html.fs1 #arenaPlay>.rowbtns,html.fs2 #arenaPlay>.rowbtns{grid-column:auto}
+}
+/* 投影档 PK 页腾高度：收起环节标题行；题卡内边距紧凑；fs2 下 PK 微降 zoom（2.25×.92≈2.07，仍大于旧档）保整卡同屏 */
+html.fs1 #stage-pk .stage-head,html.fs2 #stage-pk .stage-head{display:none}
+html.fs2 #stage-pk{zoom:.83}
+html.fs1 .quizbox:not(.q-duo),html.fs2 .quizbox:not(.q-duo){padding:.6rem .8rem}
+html.fs1 .quizbox.q-duo,html.fs2 .quizbox.q-duo{padding:.6rem 44% .6rem .8rem}
+html.fs1 .answerbar,html.fs2 .answerbar{padding:.28rem .5rem}
+html.fs1 .quiz-top,html.fs2 .quiz-top{margin-bottom:.15rem}
+/* 顶栏/底栏/提示弹窗随档放大（高度变量同步，避免文字溢出栏高） */
+html.fs1{--topbar-h:64px;--footbar-h:58px}
+html.fs2{--topbar-h:72px;--footbar-h:64px}
+html.fs1 #topbar,html.fs1 #footbar,html.fs1 #toast{font-size:1.18em}
+html.fs2 #topbar,html.fs2 #footbar,html.fs2 #toast{font-size:1.35em}
+/* 投影档下左栏收起为抽屉（复用窄屏策略），把宽度让给主内容 */
+html.fs1 #dock,html.fs2 #dock{position:fixed;left:0;top:var(--topbar-h);bottom:var(--footbar-h);transform:translateX(-103%);
+  transition:transform .32s cubic-bezier(.2,.8,.25,1);z-index:92;box-shadow:20px 0 60px rgba(0,0,0,.5)}
+html.fs1 #dock.open,html.fs2 #dock.open{transform:none}
+/* 投影档下关键题面文字再上浮一档 */
+html.fs1 .q-ask{font-size:1.15em}
+html.fs2 .q-ask{font-size:1.2em}
+html.fs1 .opt,html.fs2 .opt{font-size:1.1em}
 
 /* 案情时间线 */
 .timeline{position:relative;padding-left:1.5rem;margin:.4rem 0 0}
@@ -662,6 +828,32 @@ html.proj{font-size:clamp(17px,.55vw + 12px,22px)}
     url('assets/bg-ocean-1.jpg') center/cover no-repeat;
   transition:opacity .75s ease;}
 #splash.off{opacity:0;pointer-events:none}
+/* ============ 教学目标页（封面→目标→序幕） ============ */
+#goalPage{position:fixed;inset:0;z-index:290;display:grid;place-items:center;text-align:center;padding:1.2rem;
+  background-color:#04121f;
+  background-image:linear-gradient(180deg,rgba(3,16,28,.90) 0%,rgba(3,16,28,.95) 70%,rgba(4,18,31,.99) 100%),url('assets/bg-ocean-1.jpg');
+  background-size:cover,cover;background-position:center,center;background-repeat:no-repeat,no-repeat;
+  animation:spIn .7s cubic-bezier(.2,.8,.25,1) both}
+#goalPage[hidden]{display:none}
+#goalPage::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(78% 70% at 50% 46%,transparent 20%,rgba(3,16,28,.55) 100%)}
+.gp-inner{position:relative;z-index:1;max-width:60rem;width:100%;text-align:left}
+.gp-badge{display:inline-flex;align-items:center;gap:.55rem;padding:.3rem .85rem .3rem .55rem;border:1px solid rgba(245,199,107,.5);
+  border-radius:999px;color:var(--gold);font-weight:800;font-size:clamp(.95rem,1.3vw,1.15rem);letter-spacing:.12em;
+  background:rgba(6,24,40,.55);margin-bottom:.9rem}
+.gp-inner h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.8rem,3vw,2.8rem);color:var(--foam);
+  margin:0 0 1.25rem;text-shadow:0 2px 18px rgba(3,16,28,.8)}
+.gp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.95rem}
+.gp-row{display:flex;gap:.9rem;align-items:flex-start;text-align:left;padding:1.05rem 1.15rem;border-radius:14px;
+  background:rgba(6,24,40,.8);border:1px solid rgba(120,180,220,.22);backdrop-filter:blur(8px)}
+.gp-row b{flex:none;min-width:6.2em;font-family:var(--serif);font-weight:900;font-size:clamp(1.2rem,1.8vw,1.6rem);
+  color:var(--gold);line-height:1.35}
+.gp-row p{margin:0;font-size:clamp(1.08rem,1.55vw,1.42rem);line-height:1.7;color:var(--mist)}
+.gp-row:nth-child(1) b{color:#6ee7b6}.gp-row:nth-child(2) b{color:#a7ddfb}
+.gp-row:nth-child(3) b{color:#ffb09b}.gp-row:nth-child(4) b{color:#c9a7f5}
+#gpStart{margin-top:1.4rem}
+.gp-hint{margin:.7rem 0 0;color:var(--faint);font-size:.9rem;letter-spacing:.06em}
+@media (max-width:760px){.gp-grid{grid-template-columns:1fr}.gp-row{flex-direction:column;gap:.3rem}}
 #splash::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(72% 62% at 50% 46%,transparent 26%,rgba(3,16,28,.52) 100%)}
 .sp-inner{position:relative;z-index:1;max-width:56rem;animation:spIn 1s cubic-bezier(.2,.8,.25,1) both}
@@ -677,12 +869,19 @@ html.proj{font-size:clamp(17px,.55vw + 12px,22px)}
 .sp-sub{font-size:clamp(.85rem,1.4vw,1.05rem);font-weight:800;letter-spacing:.42em;color:var(--gold);margin:0 0 1.3rem}
 .sp-tag{font-size:clamp(.86rem,1.35vw,1.02rem);line-height:2;color:var(--mist);margin:0 auto 1.7rem;max-width:36rem;
   text-shadow:0 1px 2px rgba(3,16,28,.95),0 2px 12px rgba(3,16,28,.85)}
-#spStart{cursor:pointer;border:none;border-radius:var(--r-pill);padding:.85rem 2.2rem;font-family:var(--sans);
+/* 封面三问：总问 + 两把锁，悬念清单 */
+.sp-qs{list-style:none;margin:-0.6rem auto 1.6rem;padding:1rem 1.4rem;max-width:36rem;display:flex;flex-direction:column;gap:.55rem;
+  border:1px solid rgba(245,199,107,.32);border-radius:var(--r-lg);background:rgba(3,16,28,.55);backdrop-filter:blur(4px)}
+.sp-qs li{display:flex;align-items:center;gap:.6rem;font-size:clamp(1rem,1.7vw,1.22rem);font-weight:800;color:var(--foam);line-height:1.55}
+.sp-qs li:first-child{color:var(--gold);font-size:clamp(1.1rem,1.9vw,1.38rem)}
+.sp-qs li i{font-style:normal;flex:none;font-size:1em;filter:drop-shadow(0 0 6px rgba(245,199,107,.45))}
+.sp-qs li:not(:first-child){color:#cfe2ee;font-weight:700}
+#gpStart,#spStart{cursor:pointer;border:none;border-radius:var(--r-pill);padding:.85rem 2.2rem;font-family:var(--sans);
   font-weight:900;font-size:1.02rem;letter-spacing:.1em;color:#231703;
   background:linear-gradient(135deg,var(--gold),var(--golddeep));box-shadow:0 6px 30px rgba(245,199,107,.35);
   transition:transform .18s,box-shadow .18s}
-#spStart:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(245,199,107,.5)}
-#spStart span{margin-left:.35em}
+#gpStart:hover,#spStart:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(245,199,107,.5)}
+#gpStart span,#spStart span{margin-left:.35em}
 .sp-hint{margin-top:1.15rem;font-size:.76rem;letter-spacing:.22em;color:var(--faint)}
 </style>
 </head>
@@ -701,9 +900,30 @@ html.proj{font-size:clamp(17px,.55vw + 12px,22px)}
     <span class="sp-badge"><i class="seal"></i>CASE&nbsp;XY-1906</span>
     <h1>追缉洋流<span class="sp-dot">·</span>向阳号失联谜案</h1>
     <p class="sp-sub">高一地理 · 世界表层洋流 · 悬疑探索课</p>
-    <p class="sp-tag">1906 年 1 月，商船「向阳号」候东北季风自泉州放洋——仿郑和旧例，沿途驻泊候风。某个时节，它在孟加拉湾神秘失联——航海钟停了，无人记得那是几月。<br/>百年后，残骸出现于万里之外的索马里沿岸。<b>是谁，把船推向了非洲？</b></p>
+    <p class="sp-tag">1906 年 1 月，商船「向阳号」候东北季风自泉州放洋——仿郑和旧例，沿途驻泊候风。某个时节，它在孟加拉湾神秘失联——航海钟停了，无人记得那是几月。<br/>百年后，残骸出现于万里之外的索马里沿岸。</p>
+    <ul class="sp-qs">
+      <li><i>❓</i>是谁把船推向了非洲？</li>
+      <li><i>🔒</i>失联时间是何时？残骸为何在索马里？</li>
+      <li><i>🔒</i>郑和为何候风放洋？</li>
+    </ul>
     <button id="spStart" type="button">翻开案卷 · 开始破案<span>→</span></button>
-    <p class="sp-hint">回车 / 空格 开始 · 全程约 45 分钟 · 8 环节 · 8 题对决</p>
+<p class="sp-hint">回车 / 空格 开始 · 全程约 45 分钟 · 8 环节 · 6 题对决</p>
+  </div>
+</div>
+
+<!-- ============ 教学目标页（封面之后、序幕之前） ============ -->
+<div id="goalPage" hidden>
+  <div class="gp-inner">
+    <span class="gp-badge"><i class="seal"></i>课前导航 · 教学目标</span>
+    <h2>破案之前 · 先明确本课任务</h2>
+    <div class="gp-grid">
+      <div class="gp-row"><b>人地协调观</b><p>通过破案情境，认识洋流对气候、渔场、航行、污染等人类活动的实际影响，树立利用海洋规律、保护海洋环境的意识。</p></div>
+      <div class="gp-row"><b>综合思维</b><p>结合图表与破案线索，综合分析洋流对航行、气候、渔场等多方面的影响，理解"海水运动—人类活动"的相互作用。</p></div>
+      <div class="gp-row"><b>区域认知</b><p>结合世界洋流分布图，认识北印度洋、索马里等区域的洋流特征及其对人类活动的影响。</p></div>
+      <div class="gp-row"><b>地理实践力</b><p>观察动态洋流图、参与破案推理与 PK 对决，课后绘制洋流分布简图，提高读图判图与空间归纳能力。</p></div>
+    </div>
+    <button id="gpStart" type="button">目标明确 · 开始破案<span>→</span></button>
+    <p class="gp-hint">回车 / 空格 进入序幕 · 全程约 45 分钟</p>
   </div>
 </div>
 
@@ -724,7 +944,7 @@ html.proj{font-size:clamp(17px,.55vw + 12px,22px)}
     <!-- ============ 左栏 · 侦探档案 ============ -->
     <aside id="dock" aria-label="侦探档案与线索收集">
       <div class="dock-head">
-        <div class="dock-title"><span class="ic">✦</span>侦探档案 · 线索收集</div>
+        <div class="dock-title"><span class="ic">✦</span>侦探档案 · 线索收集<button id="dockHide" type="button" title="收起档案栏" aria-label="收起档案栏">⇤ 收起</button></div>
         <div class="dock-stats">
           <div class="stat-chip"><b id="statSolved">0/5</b><span>破案点</span></div>
           <div class="stat-chip"><b id="statPages">0/4</b><span>日志残页</span></div>
@@ -751,7 +971,7 @@ html.proj{font-size:clamp(17px,.55vw + 12px,22px)}
       <section class="stage-view" id="stage-prologue" data-name="迷案初现" data-sub="向阳号失联谜案" data-time="约 5 分钟">
         <div class="stage-head">
           <span class="stage-no">壹</span>
-          <div class="sh-main"><h2>迷案初现 · 向阳号失联谜案</h2><p class="sh-sub">序幕 · 案情通报 —— 读懂案件，才能读懂这节课</p></div>
+<div class="sh-main"><h2>迷案初现 · 向阳号失联谜案</h2><span class="sh-q">（船在孟加拉湾失联，残骸怎么跑到西边的索马里？）</span><p class="sh-sub">序幕 · 案情通报 —— 读懂案件，才能读懂这节课</p></div>
           <div class="sh-side"><span class="badge gold">悬疑导入 · 约 5 分钟</span></div>
         </div>
         <div class="stage-body scroll"><div class="stage-wrap">
@@ -801,7 +1021,7 @@ html.proj{font-size:clamp(17px,.55vw + 12px,22px)}
                 </div>
                 <svg viewBox="0 0 820 470" role="img" aria-label="向阳号航线与失联位置示意图">
                   <defs>
-                    <marker id="pRoute" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#e8eef4"/></marker>
+                    
                   </defs>
                   <rect x="10" y="12" width="810" height="446" rx="12" fill="rgba(29,111,156,.2)"/>
                   <!-- 陆地（按经纬度映射：x=(经度-36)×9.4+20，y=(24-纬度)×10+26） -->
@@ -843,21 +1063,16 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
                   <text class="svg-note" x="30" y="258" font-size="12" fill="#f5c76b">赤道</text>
                   <!-- 出发港 泉州（真实经纬度：约 118.7°E / 24.9°N） -->
                   <g>
-                    <circle cx="797" cy="24" r="5" fill="#eaf6ff" stroke="rgba(234,246,255,.5)"/>
-                    <circle cx="797" cy="24" r="10" fill="none" stroke="rgba(234,246,255,.35)"/>
-                    <text class="svg-label" x="786" y="50" font-size="13.5" fill="#eaf6ff" text-anchor="end">泉州 · 启航</text>
+                    <text class="svg-label" x="796" y="29" font-size="13.5" fill="#eaf6ff" text-anchor="end">泉州 · 启航</text>
                   </g>
-                  <!-- 原计划航线：泉州→越南外海→新加坡→马六甲→横穿阿拉伯海→亚丁湾赴欧 -->
-                  <path d="M795,26 C772,80 742,130 706,170 C678,202 650,226 616,242 C604,250 594,254 585,257 C577,264 570,268 560,264 C552,258 544,246 536,236 C500,222 460,210 420,202 C370,194 320,190 270,187 C224,184 178,181 138,179 C124,178 112,177 100,172" fill="none" stroke="#e8eef4" stroke-width="2.6" stroke-dasharray="9 8" marker-end="url(#pRoute)"/>
-                  <text class="svg-note" x="250" y="198" font-size="12" fill="#cfe4f2">原计划航线：候冬季风西行 → 赴欧洲</text>
                   <!-- 失联点（孟加拉湾） -->
                   <g>
-                    <circle cx="447" cy="163" r="14" fill="none" stroke="#ff6b6b" stroke-width="1.6" opacity=".8">
+                    <circle cx="447" cy="148" r="14" fill="none" stroke="#ff6b6b" stroke-width="1.6" opacity=".8">
                       <animate attributeName="r" values="10;20;10" dur="2.6s" repeatCount="indefinite"/>
                       <animate attributeName="opacity" values=".85;.15;.85" dur="2.6s" repeatCount="indefinite"/>
                     </circle>
-                    <path d="M440,156 L454,170 M454,156 L440,170" stroke="#ff6b6b" stroke-width="3.6" stroke-linecap="round"/>
-                    <text class="svg-label" x="458" y="152" font-size="13" fill="#ffb3b3">最后通讯 · 孟加拉湾</text>
+                    <path d="M440,141 L454,155 M454,141 L440,155" stroke="#ff6b6b" stroke-width="3.6" stroke-linecap="round"/>
+                    <text class="svg-label" x="458" y="140" font-size="13" fill="#ffb3b3">最后通讯 · 孟加拉湾</text>
                   </g>
                   <!-- 漂流路径谜题标记（不画轨迹——路径正是全课要推理的答案） -->
                   <g>
@@ -873,11 +1088,11 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
                     <text class="svg-note" x="96" y="254" font-size="11" fill="#c99a35">索马里半岛沿岸</text>
                   </g>
                 </svg>
-                <figcaption>案发海域示意：白色虚线为原计划航线；✕ 为最后通讯点；📍 为残骸发现处</figcaption>
+                <figcaption>案发海域示意：✕ 为最后通讯点；📍 为残骸发现处　<button class="btn btn-ghost btn-sm" id="mapZoomBtn" type="button" style="margin-left:.6em">🔍 放大 · 画航线</button></figcaption>
               </figure>
               <div class="card flat" style="margin-top:1rem">
                 <div class="card-head"><i class="dot"></i><h3 class="h3">学生任务</h3></div>
-                <p style="color:var(--mist);font-size:.96rem">全班化身<b>「海洋侦探团」</b>，分四支科考队。整节课跟随<b>四张日志残页</b>追踪失联航迹——每解开一个知识点，解锁一页日志；而最关键的<b>失联季节</b>，要靠你们自己拼出来。</p>
+                <p style="color:var(--mist);font-size:.96rem">全班化身<b>「海洋侦探团」</b>科考队。整节课跟随<b>四张日志残页</b>追踪失联航迹——每解开一个知识点，解锁一页日志；而最关键的<b>失联季节</b>，要靠你们自己拼出来。</p>
                 <div class="rowbtns" style="margin-top:.9rem;justify-content:flex-end">
                   <button class="btn btn-primary" data-goto="concept" type="button">成立侦探团 · 翻开第一页 <span class="arrow">→</span></button>
                 </div>
@@ -894,9 +1109,9 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
             <div class="card tint-gold" style="margin:0">
               <div class="card-head"><i class="dot"></i><h3 class="h3">三把没找到钥匙的锁</h3></div>
               <p class="sub" style="margin:0 0 .6rem">侦探守则：一切反常，都有地理规律在作祟。这三个问题，就是全案的入口——</p>
-              <div class="rulebar"><span class="rk">锁 ①</span><span class="rv">从泉州到欧洲，船为什么要<b>绕道印度洋</b>，而不是直走？</span></div>
-              <div class="rulebar"><span class="rk">锁 ②</span><span class="rv">日志为什么记载<b>"被看不见的海流推离航线"</b>？海面上风平浪静，推船的力量是什么？</span></div>
-              <div class="rulebar warm"><span class="rk">锁 ③</span><span class="rv">船骸为什么出现在<b>西侧的索马里</b>，而不是航线半途的孟加拉湾？（<b>全课最大悬念</b>——答案藏在四页日志里）</span></div>
+              <div class="rulebar warm"><span class="rk">锁 ①</span><span class="rv"><b>是谁把船推向了非洲？</b>（总悬念 —— 贯穿全课，层层逼近）</span></div>
+              <div class="rulebar"><span class="rk">锁 ②</span><span class="rv">失联时间是何时？<b>残骸为何在索马里</b>？（<b>全课最大悬念</b>——答案藏在四页日志里）</span></div>
+              <div class="rulebar"><span class="rk">锁 ③</span><span class="rv">郑和为何<b>候风放洋</b>？（人类与洋流相处千年的智慧）</span></div>
             </div>
           </div>
         </div></div>
@@ -906,7 +1121,7 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
       <section class="stage-view" id="stage-concept" data-name="看不见的推手" data-sub="洋流的概念" data-time="约 5 分钟">
         <div class="stage-head">
           <span class="stage-no">贰</span>
-          <div class="sh-main"><h2>残页一 · 看不见的推手</h2><p class="sh-sub">洋流是什么 —— 解开悬念②："推船的海流"到底是什么</p></div>
+<div class="sh-main"><h2>残页一 · 看不见的推手</h2><span class="sh-q">（推着船走的，是什么力量？）</span><p class="sh-sub">洋流是什么 —— 解开锁①："推船的海流"到底是什么</p></div>
           <div class="sh-side"><span class="crack-badge" data-crack="concept"><i class="pulse"></i>破案点待解</span></div>
         </div>
         <div class="stage-body scroll"><div class="stage-wrap">
@@ -926,8 +1141,7 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
                   <div class="card flat" style="padding:.8rem .9rem;text-align:center"><b style="font-size:1.15rem;color:var(--gold)">大规模</b><p class="sub" style="margin-top:.2rem">宽数十至数百公里、深数百米</p></div>
                 </div>
                 <div class="rulebar" style="margin-top:.8rem"><span class="rk">概念</span><span class="rv">海洋中的海水，<b>常年比较稳定地沿一定方向做大规模流动</b>，叫做<b>洋流</b>。</span></div>
-                <div class="rulebar cold"><span class="rk">辨析</span><span class="rv"><b>潮汐</b>（一天两次涨落、方向反复）与<b>风浪</b>（风起浪涌、风停浪止）时间尺度短、方向不定——都<b>不是</b>洋流。</span></div>
-              </div>
+                </div>
             </div>
             <div>
               <figure class="figure">
@@ -954,7 +1168,7 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
 
           <div class="crack" id="crack-concept">
             <span class="crack-tag">🔍 破案点 · 镜海点击</span>
-            <p class="q-ask" style="margin-top:.3rem"><span class="qn">?</span>屏幕滚动出现 6 条语句——逐条判断：<b>这是不是洋流？</b>每答对一条，点亮残页一角。</p>
+            <p class="q-ask" style="margin-top:.3rem"><span class="qn">?</span>屏幕滚动出现语句——逐条判断：<b>这是不是洋流？</b>每答对一条，点亮残页一角。</p>
             <div class="card flat judge-card">
               <div class="judge-dots" id="judgeDots"></div>
               <p class="judge-stmt" id="judgeStmt">点击下方按钮开始判定…</p>
@@ -964,7 +1178,7 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
               </div>
               <div class="judge-fb" id="judgeFb">第 1 / 6 条</div>
               <div class="page-corners" id="judgeCorners">
-                <i class="pc">✦</i><i class="pc">✦</i><i class="pc">✦</i><i class="pc">✦</i>
+                <i class="pc">✦</i><i class="pc">✦</i><i class="pc">✦</i>
               </div>
             </div>
             <div class="reward-line" id="reward-concept" hidden></div>
@@ -976,7 +1190,7 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
       <section class="stage-view" id="stage-classify" data-name="暖寒有据" data-sub="洋流的分类" data-time="约 7 分钟">
         <div class="stage-head">
           <span class="stage-no">叁</span>
-          <div class="sh-main"><h2>残页二 · 暖寒有据</h2><p class="sh-sub">按性质分：暖流与寒流 · 按成因分：风海流 / 密度流 / 补偿流</p></div>
+<div class="sh-main"><h2>残页二 · 暖寒有据</h2><span class="sh-q">（船长笔记的水温异常，透露了什么线索？）</span><p class="sh-sub">按性质分：暖流与寒流 · 按成因分：风海流 / 密度流 / 补偿流</p></div>
           <div class="sh-side"><span class="crack-badge" data-crack="classify"><i class="pulse"></i>破案点待解</span></div>
         </div>
         <div class="stage-body scroll"><div class="stage-wrap">
@@ -1028,18 +1242,10 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
                 <text x="406" y="114">10℃</text><text x="406" y="172">15℃</text><text x="406" y="230">20℃</text>
                 <text x="856" y="114">20℃</text><text x="856" y="172">15℃</text><text x="856" y="230">10℃</text>
               </g>
-              <line x1="95" y1="286" x2="95" y2="66" stroke="#ff7a59" stroke-width="4" stroke-dasharray="11 9" class="dashmove" marker-end="url(#mkWarm)"/>
-              <line x1="305" y1="66" x2="305" y2="286" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 9" class="dashmove" marker-end="url(#mkCold)" style="animation-delay:-1s"/>
-              <text class="svg-label" x="70" y="304" font-size="15" fill="#ffb09b">暖流</text>
-              <text class="svg-note" x="70" y="318" font-size="11.5" fill="#e0a294">低纬 → 高纬</text>
-              <text class="svg-label" x="280" y="304" font-size="15" fill="#a7ddfb">寒流</text>
-              <text class="svg-note" x="280" y="318" font-size="11.5" fill="#8cc3d8">高纬 → 低纬</text>
-              <line x1="543" y1="286" x2="543" y2="66" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 9" class="dashmove" marker-end="url(#mkCold)"/>
-              <line x1="753" y1="66" x2="753" y2="286" stroke="#ff7a59" stroke-width="4" stroke-dasharray="11 9" class="dashmove" marker-end="url(#mkWarm)" style="animation-delay:-1s"/>
-              <text class="svg-label" x="530" y="304" font-size="15" fill="#a7ddfb">寒流</text>
-              <text class="svg-note" x="530" y="318" font-size="11.5" fill="#8cc3d8">高纬 → 低纬</text>
-              <text class="svg-label" x="740" y="304" font-size="15" fill="#ffb09b">暖流</text>
-              <text class="svg-note" x="740" y="318" font-size="11.5" fill="#e0a294">低纬 → 高纬</text>
+              <g class="cur-g"><line x1="95" y1="286" x2="95" y2="66" stroke="#ff7a59" stroke-width="4" stroke-dasharray="11 9" class="dashmove" marker-end="url(#mkWarm)"/><rect x="79" y="52" width="32" height="248" fill="transparent" style="cursor:pointer"/><circle class="cur-q" cx="95" cy="299" r="13" fill="rgba(3,16,28,.75)" stroke="#93a3b3" stroke-dasharray="3 3"/><text class="cur-q" x="95" y="304" font-size="13" fill="#cfe4f2" text-anchor="middle">?</text><g class="cur-ans"><text class="svg-label" x="70" y="304" font-size="15" fill="#ffb09b">暖流</text><text class="svg-note" x="70" y="318" font-size="11.5" fill="#e0a294">低纬 → 高纬</text></g></g>
+              <g class="cur-g"><line x1="305" y1="66" x2="305" y2="286" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 9" class="dashmove" marker-end="url(#mkCold)" style="animation-delay:-1s"/><rect x="289" y="52" width="32" height="248" fill="transparent" style="cursor:pointer"/><circle class="cur-q" cx="305" cy="299" r="13" fill="rgba(3,16,28,.75)" stroke="#93a3b3" stroke-dasharray="3 3"/><text class="cur-q" x="305" y="304" font-size="13" fill="#cfe4f2" text-anchor="middle">?</text><g class="cur-ans"><text class="svg-label" x="280" y="304" font-size="15" fill="#a7ddfb">寒流</text><text class="svg-note" x="280" y="318" font-size="11.5" fill="#8cc3d8">高纬 → 低纬</text></g></g>
+              <g class="cur-g"><line x1="543" y1="286" x2="543" y2="66" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 9" class="dashmove" marker-end="url(#mkCold)"/><rect x="527" y="52" width="32" height="248" fill="transparent" style="cursor:pointer"/><circle class="cur-q" cx="543" cy="299" r="13" fill="rgba(3,16,28,.75)" stroke="#93a3b3" stroke-dasharray="3 3"/><text class="cur-q" x="543" y="304" font-size="13" fill="#cfe4f2" text-anchor="middle">?</text><g class="cur-ans"><text class="svg-label" x="530" y="304" font-size="15" fill="#a7ddfb">寒流</text><text class="svg-note" x="530" y="318" font-size="11.5" fill="#8cc3d8">高纬 → 低纬</text></g></g>
+              <g class="cur-g"><line x1="753" y1="66" x2="753" y2="286" stroke="#ff7a59" stroke-width="4" stroke-dasharray="11 9" class="dashmove" marker-end="url(#mkWarm)" style="animation-delay:-1s"/><rect x="737" y="52" width="32" height="248" fill="transparent" style="cursor:pointer"/><circle class="cur-q" cx="753" cy="299" r="13" fill="rgba(3,16,28,.75)" stroke="#93a3b3" stroke-dasharray="3 3"/><text class="cur-q" x="753" y="304" font-size="13" fill="#cfe4f2" text-anchor="middle">?</text><g class="cur-ans"><text class="svg-label" x="740" y="304" font-size="15" fill="#ffb09b">暖流</text><text class="svg-note" x="740" y="318" font-size="11.5" fill="#e0a294">低纬 → 高纬</text></g></g>
               <text class="svg-note" x="450" y="342" font-size="13.5" text-anchor="middle">暖流流经处等温线凸向高纬；寒流流经处凸向低纬 —— <tspan fill="#f5c76b" font-weight="700">凸出的方向就是流向</tspan></text>
             </svg>
             <figcaption>洋流流向与等温线凸向的关系（虚线为洋流，灰线为等温线）</figcaption>
@@ -1051,7 +1257,7 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
             <div class="card tint-gold" style="margin:0">
               <div class="card-head"><i class="dot"></i><h3 class="h3">① 风海流</h3></div>
               <p style="font-size:.95rem">受<b>盛行风</b>驱动，海水做大规模定向运动——<b>最主要的成因</b>，规模最大。</p>
-              <p class="sub">案例：<b>西风漂流、信风漂流、北印度洋季风洋流</b>（冬逆夏顺）</p>
+              <p class="sub">案例：<b>西风漂流</b>（盛行西风吹送，全球最强大的洋流之一）</p>
             </div>
             <figure class="figure" style="margin:0">
               <svg viewBox="0 0 860 330" role="img" aria-label="风海流成因示意：盛行风吹拂海面，摩擦力层层下传" style="display:block;width:100%;border-radius:12px;border:1px solid rgba(245,199,107,.25)">
@@ -1124,33 +1330,34 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
               <p class="sub">案例：<b>秘鲁沿岸</b>上升补偿流（离岸风驱动）</p>
             </div>
             <figure class="figure" style="margin:0">
-              <svg viewBox="0 0 860 330" role="img" aria-label="上升补偿流成因示意：离岸风吹走表层水，深层冷水上涌补偿" style="display:block;width:100%;border-radius:12px;border:1px solid rgba(87,214,163,.32)">
+              <svg viewBox="0 0 860 330" role="img" aria-label="上升补偿流成因示意：东南信风吹走表层水，深层冷水上涌补偿" style="display:block;width:100%;border-radius:12px;border:1px solid rgba(87,214,163,.32)">
                 <rect x="0" y="0" width="860" height="330" rx="12" fill="url(#clsSea)"/>
-                <path class="svg-land" d="M14,92 L150,92 L280,316 L14,316 Z"/>
-                <text class="svg-note" x="34" y="82" font-size="21" fill="#cfe4f2">陆地（海岸）</text>
-                <line x1="150" y1="146" x2="846" y2="146" stroke="rgba(234,246,255,.5)" stroke-width="2.2"/>
+                <path class="svg-land" d="M846,92 L716,92 L586,316 L846,316 Z"/>
+                <text class="svg-note" x="778" y="120" font-size="21" fill="#cfe4f2" writing-mode="tb" letter-spacing="8">南美大陆</text>
+                <text class="svg-note" x="740" y="122" font-size="17" fill="#9dbbce" writing-mode="tb" letter-spacing="6">（西岸）</text>
+                <text class="svg-note" x="24" y="172" font-size="17" fill="#8fb6cf">太平洋</text>
+                <line x1="14" y1="146" x2="716" y2="146" stroke="rgba(234,246,255,.5)" stroke-width="2.2"/>
                 <g stroke="#f5c76b" stroke-width="4.5" fill="none" stroke-dasharray="13 10" class="dashmove">
-                  <path d="M60,68 L250,112" marker-end="url(#clsW)"/>
-                  <path d="M60,98 L230,132" marker-end="url(#clsW)" style="animation-delay:-.6s"/>
+                  <path d="M800,124 L610,76" marker-end="url(#clsW)"/>
+                  <path d="M772,160 L592,120" marker-end="url(#clsW)" style="animation-delay:-.6s"/>
                 </g>
-                <text class="svg-label" x="300" y="90" font-size="24" fill="#ffe6b8">离岸风（东南信风）</text>
-                <path d="M200,168 L680,168" fill="none" stroke="#f5c76b" stroke-width="5" stroke-dasharray="14 10" class="dashmove" marker-end="url(#clsW)"/>
-                <text class="svg-note" x="300" y="140" font-size="21" fill="#ffe6b8">表层海水被吹离海岸</text>
+                <text class="svg-label" x="430" y="72" font-size="24" fill="#ffe6b8">离岸风（东南信风）</text>
+                <path d="M690,168 L210,168" fill="none" stroke="#f5c76b" stroke-width="5" stroke-dasharray="14 10" class="dashmove" marker-end="url(#clsW)"/>
+                <text class="svg-note" x="280" y="140" font-size="21" fill="#ffe6b8">表层海水被吹离海岸（向西北离岸）</text>
                 <g stroke="#49c2f5" stroke-width="5" fill="none" stroke-dasharray="11 9" class="dashmove">
-                  <path d="M320,300 L320,196" marker-end="url(#clsC)"/>
-                  <path d="M392,306 L392,208" marker-end="url(#clsC)" style="animation-delay:-.5s"/>
-                  <path d="M464,308 L464,226" marker-end="url(#clsC)" style="animation-delay:-1s"/>
+                  <path d="M560,300 L560,196" marker-end="url(#clsC)"/>
+                  <path d="M616,306 L616,208" marker-end="url(#clsC)" style="animation-delay:-.5s"/>
+                  <path d="M668,308 L668,226" marker-end="url(#clsC)" style="animation-delay:-1s"/>
                 </g>
-                <text class="svg-note" x="560" y="262" font-size="23" fill="#a7ddfb">深层冷水上涌补偿</text>
-                <rect x="280" y="276" width="566" height="40" fill="rgba(73,194,245,.12)"/>
+                <text class="svg-note" x="380" y="262" font-size="23" fill="#a7ddfb">深层冷水上涌补偿</text>
+                <rect x="300" y="276" width="400" height="40" fill="rgba(73,194,245,.12)"/>
                 <g fill="#57d6a3">
-                  <path d="M330,206 q14,-9 28,0 q-14,9 -28,0 Z"/><path d="M327,206 l-10,-6 l0,12 Z"/>
-                  <path d="M390,188 q14,-9 28,0 q-14,9 -28,0 Z"/><path d="M387,188 l-10,-6 l0,12 Z"/>
-                  <path d="M362,224 q14,-9 28,0 q-14,9 -28,0 Z"/><path d="M359,224 l-10,-6 l0,12 Z"/>
+                  <path d="M480,206 q14,-9 28,0 q-14,9 -28,0 Z"/><path d="M477,206 l-10,-6 l0,12 Z"/>
+                  <path d="M540,188 q14,-9 28,0 q-14,9 -28,0 Z"/><path d="M537,188 l-10,-6 l0,12 Z"/>
+                  <path d="M512,224 q14,-9 28,0 q-14,9 -28,0 Z"/><path d="M509,224 l-10,-6 l0,12 Z"/>
                 </g>
-                <text class="svg-note" x="430" y="182" font-size="21" fill="#6ee7b6">饵料上泛 · 鱼群聚集（渔场）</text>
+                <text class="svg-note" x="270" y="182" font-size="21" fill="#6ee7b6">饵料上泛 · 鱼群聚集（渔场）</text>
               </svg>
-            </figure>
           </div>
 
           <div class="crack" id="crack-classify">
@@ -1173,7 +1380,7 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
       <section class="stage-view" id="stage-wmap" data-name="全球环流" data-sub="世界洋流分布规律" data-time="约 7 分钟">
         <div class="stage-head">
           <span class="stage-no">肆</span>
-          <div class="sh-main"><h2>洋流地图 · 全球环流</h2><p class="sh-sub">世界洋流分布规律 —— 洋流像训练有素的军队：受盛行风指挥、被地转偏向力拐弯、被海陆轮廓挡路</p></div>
+<div class="sh-main"><h2>洋流地图 · 全球环流</h2><span class="sh-q">（地点已知、时间成谜——失联于哪个季节？）</span><p class="sh-sub">世界洋流分布规律 —— 洋流像训练有素的军队：受盛行风指挥、被地转偏向力拐弯、被海陆轮廓挡路</p></div>
           <div class="sh-side"><span class="crack-badge" data-crack="wmap"><i class="pulse"></i>破案点待解</span></div>
         </div>
         <div class="stage-body scroll"><div class="stage-wrap">
@@ -1229,7 +1436,7 @@ L1095,-450L1119,-442L1157,-444L1176,-443L1184,-439L1183,-431L1194,-428L1207,-430
                   <rect x="10" y="12" width="700" height="446" rx="12" fill="rgba(29,111,156,.2)"/>
                   <g class="svg-land">
                     <!-- 大陆轮廓：Natural Earth 110m 标准陆地数据，与经纬映射同一坐标系（x=(经度-36)×9.4+20，y=(24-纬度)×10+26）；nioLand 供 figTruth 题图运行时复用 -->
-                    <path id="nioLand" fill-rule="evenodd" clip-rule="evenodd" d="M152,402L154,414L156,418L155,423L153,426L150,420L149,423L150,431L149,435L147,437L146,446L143,457L138,471L132,490L129,504L124,515L117,518L108,522L103,519L96,516L93,511L92,502L89,494L88,487L90,479L94,478L94,474L99,467L100,460L97,456L96,449L95,440L98,435L99,428L104,428L109,426L113,424L117,424L122,418L130,412L133,407L132,403L136,404L141,397L141,391L144,386L147,391L150,395L152,402Z M703,334L721,335L723,331L740,335L744,342L758,344L769,350L759,354L748,349L740,350L730,349L721,347L710,343L703,342L699,344L682,340L681,335L672,335L678,325L690,326L697,329L701,330L703,334Z M676,325L666,325L658,316L646,308L642,302L635,294L630,287L623,273L615,264L612,256L608,248L600,241L595,233L588,227L578,216L577,211L583,212L598,214L606,223L614,230L619,234
+                    <path id="nioLand" fill-rule="evenodd" clip-rule="evenodd" d="M152,402L154,414L156,418L155,423L153,426L150,420L149,423L150,431L149,435L147,437L146,446L143,457L138,471L132,490L129,504L124,515L117,518L108,522L103,519L96,516L93,511L92,502L89,494L88,487L90,479L94,478L94,474L99,467L100,460L97,456L96,449L95,440L98,435L99,428L104,428L109,426L113,424L117,424L122,418L130,412L133,407L132,403L136,404L141,397L141,391L144,386L147,391L150,395L152,402Z M703,334L721,335L723,331L740,335L744,342L758,344L769,350L759,354L748,349L740,350L730,349L721,347L710,343L703,342L699,344L682,340L681,335L672,335L678,325L690,326L697,329L701,330L703,334Z M676,325L666,325L658,316L646,308L642,302L635,294L618,292L623,273L615,264L612,256L608,248L600,241L595,233L588,227L578,216L577,211L583,212L598,214L606,223L614,230L619,234
 L628,245L637,245L645,252L651,260L658,265L654,273L659,277L663,277L664,284L668,289L674,290L679,297L677,309L676,325Z M790,248L800,257L789,258L786,265L786,274L777,281L777,291L773,306L772,303L761,307L758,301L751,300L746,297L735,301L732,296L725,296L718,295L716,282L712,279L707,271L706,262L707,253L712,246L719,249L727,247L728,239L732,237L744,235L750,227L755,221L759,217L767,212L774,205L779,197L783,197L787,202L788,206L794,209L802,212L801,216L795,216L797,221L790,225L784,234L791,243L790,248Z M445,204L437,206L432,198L431,184L435,168L442,173L446,180L450,191L449,201L445,204Z M719,79L711,84L703,81L703,72L707,68L718,65L723,65L725,69L721,73L719,79Z M-2010,-424L-1987,-416L-1963,-406L-1964,-400L-1957,-397L-1959,-405L-1934,-403L-1915,-394L-1925,-389
 L-1940,-388L-1940,-379L-1944,-377L-1953,-377L-1960,-380L-1973,-383L-1975,-388L-1984,-389L-1995,-388L-2000,-391L-1998,-395L-2009,-393L-2005,-388L-2010,-384L1374,-384L1361,-379L1349,-380L1358,-375L1363,-367L1368,-364L1369,-360L1366,-357L1349,-359L1323,-352L1314,-351L1300,-343L1286,-337L1283,-333L1269,-340L1245,-332L1241,-336L1231,-331L1219,-333L1216,-326L1205,-316L1205,-312L1216,-310L1214,-296L1206,-295L1202,-287L1206,-283L1189,-277L1186,-266L1172,-264L1169,-253L1155,-244L1152,-251L1148,-266L1143,-288L1147,-302L1155,-308L1156,-312L1170,-315L1187,-327L1203,-337L1220,-345L1228,-360L1216,-359L1211,-350L1187,-339L1179,-352L1155,-348L1131,-332L1139,-325L1118,-323L1103,-322L1104,-329L1090,-331L1078,-326L1049,-327L1018,-324L988,-305
 L952,-281L967,-280L971,-274L980,-272L986,-277L997,-276L1010,-265L1011,-256L1003,-246L1002,-234L998,-218L984,-204L981,-197L968,-185L955,-174L949,-168L937,-162L931,-162L925,-167L912,-160L911,-156L907,-157L903,-153L900,-150L901,-143L896,-141L894,-139L891,-136L885,-134L880,-132L880,-127L883,-125L888,-120L896,-108L899,-102L899,-90L895,-85L887,-83L879,-79L871,-78L870,-83L871,-91L867,-101L874,-103L868,-111L863,-113L862,-112L859,-111L856,-113L854,-115L856,-119L859,-121L860,-128L854,-131L850,-133L837,-130L830,-126L819,-123L825,-128L823,-132L830,-138L825,-143L817,-140L806,-133L800,-127L791,-126L786,-121L791,-115L799,-113L799,-108L807,-106L817,-113L826,-109L832,-109L833,-103L820,-101L816,-95L806,-90L802,-83L812,-78L815,-68L821,-59L828,-51
@@ -1260,37 +1467,45 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
                   <!-- 冬季环流（逆时针） -->
                   <g id="wMon-winter">
                     <text class="svg-label" x="360" y="446" font-size="15" fill="#a7ddfb" text-anchor="middle">冬季 · 东北季风 · 逆时针 · 海水向西南流</text>
-                    <!-- 按教材图弧形环流：孟加拉湾湾顶西向 → 阿拉伯海西南向 → 索马里沿岸南下 → 赤道逆流东向 → 苏门答腊西侧北上，绕印度半岛南端成大逆时针环 -->
-                    <path class="dashmove" d="M560,148 Q470,108 380,140" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)"/>
-                    <path class="dashmove" d="M368,152 Q300,138 262,170" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-.5s"/>
-                    <path class="dashmove" d="M262,172 Q200,200 174,220" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-1s"/>
-                    <path class="dashmove" d="M184,238 Q380,254 566,234" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-1.5s"/>
-                    <path class="dashmove" d="M566,236 Q585,195 556,150" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-2s"/>
-                    <line x1="492" y1="88" x2="418" y2="112" stroke="#57d6a3" stroke-width="4" marker-end="url(#wGold)"/>
-                    <line x1="340" y1="100" x2="270" y2="126" stroke="#57d6a3" stroke-width="4" marker-end="url(#wGold)" opacity=".85"/>
+                    <!-- 冬季大环流（逆时针，阿拉伯海段按流矢链分段）：湾顶西行 → 沿印度东岸南下 → 绕科摩林角/斯里兰卡以南水道 → 沿印度半岛西侧西南下 → 阿拉伯海中部西行 → 折向索马里沿岸 → 赤道逆流东行 → 苏门答腊西岸北上回湾顶；失联点旁补西南向短矢，阿拉伯海北部保留补充流矢；洋流不穿陆地 -->
+                    <path class="dashmove" d="M552,80 Q505,62 462,106" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)"/>
+                    <path class="dashmove" d="M458,110 Q438,152 464,196" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-.35s"/>
+                    <path class="dashmove" d="M448,158 Q455,172 462,184" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-.7s"/>
+                    <path class="dashmove" d="M462,198 Q420,232 380,178" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-1.05s"/>
+                    <path class="dashmove" d="M376,176 Q340,182 304,194" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-1.4s"/>
+                    <path class="dashmove" d="M300,197 Q248,212 200,214" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-1.75s"/>
+                    <path class="dashmove" d="M197,217 Q182,248 172,282" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-2.1s"/>
+                    <path class="dashmove" d="M165,298 Q370,288 568,250" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-2.45s"/>
+                    <path class="dashmove" d="M570,248 Q558,160 552,82" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-2.8s"/>
+                    <path class="dashmove" d="M330,105 Q240,140 200,175" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-3.15s"/>
+                    <line x1="540" y1="92" x2="470" y2="116" stroke="#57d6a3" stroke-width="4" marker-end="url(#wGold)"/>
+                    <line x1="340" y1="100" x2="275" y2="130" stroke="#57d6a3" stroke-width="4" marker-end="url(#wGold)" opacity=".85"/>
                   </g>
                   <!-- 夏季环流（顺时针） -->
                   <g id="wMon-summer" hidden>
                     <text class="svg-label" x="360" y="446" font-size="15" fill="#ffb09b" text-anchor="middle">夏季 · 西南季风 · 顺时针 · 海水向东北流</text>
-                    <!-- 顺时针：方向全反（同教材图左下插图「夏季洋流」） -->
-                    <path class="dashmove" d="M380,140 Q470,108 560,148" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)"/>
-                    <path class="dashmove" d="M262,170 Q300,138 368,152" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-.5s"/>
-                    <path class="dashmove" d="M174,220 Q200,200 262,172" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-1s"/>
-                    <path class="dashmove" d="M566,234 Q380,254 184,238" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-1.5s"/>
-                    <path class="dashmove" d="M556,150 Q585,195 566,236" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-2s"/>
-                    <line x1="418" y1="112" x2="492" y2="88" stroke="#57d6a3" stroke-width="4" marker-end="url(#wGold)"/>
-                    <line x1="270" y1="126" x2="340" y2="100" stroke="#57d6a3" stroke-width="4" marker-end="url(#wGold)" opacity=".85"/>
+                    <!-- 顺时针大环流（参照教材图夏季画法）：索马里沿岸北上（约8°N）→ 阿拉伯海主轴沿5°—15°N纬度带东行 → 绕科摩林角/斯里兰卡以南水道 → 沿印度东岸北上 → 孟加拉湾湾顶东行折回 → 苏门答腊西侧南下 → 汇入南赤道流（赤道以南自东向西）；洋流不穿陆地 -->
+                    <path class="dashmove" d="M170,290 Q180,240 195,200" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)"/>
+                    <path class="dashmove" d="M198,198 Q300,178 395,183" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-.4s"/>
+                    <path class="dashmove" d="M399,185 Q428,224 462,198" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-.8s"/>
+                    <path class="dashmove" d="M464,196 Q438,152 458,110" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-1.2s"/>
+                    <path class="dashmove" d="M462,106 Q505,62 552,80" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-1.6s"/>
+                    <path class="dashmove" d="M552,82 Q558,160 570,248" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-2s"/>
+                    <path class="dashmove" d="M568,250 Q370,288 165,298" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-2.4s"/>
+                    <path class="dashmove" d="M200,175 Q240,140 330,105" fill="none" stroke="#49c2f5" stroke-width="4" stroke-dasharray="11 8" marker-end="url(#wCya)" style="animation-delay:-2.8s"/>
+                    <line x1="470" y1="116" x2="540" y2="92" stroke="#57d6a3" stroke-width="4" marker-end="url(#wGold)"/>
+                    <line x1="275" y1="130" x2="340" y2="100" stroke="#57d6a3" stroke-width="4" marker-end="url(#wGold)" opacity=".85"/>
                     <line x1="300" y1="232" x2="380" y2="200" stroke="#57d6a3" stroke-width="4" marker-end="url(#wGold)" opacity=".85"/>
                   </g>
                   <!-- 失联点与残骸 -->
-                  <path d="M440,156 L454,170 M454,156 L440,170" stroke="#ff6b6b" stroke-width="3.4" stroke-linecap="round"/>
-                  <text class="svg-label" x="458" y="150" font-size="12.5" fill="#ffb3b3">失联点</text>
+                  <path d="M439,135 L453,149 M453,135 L439,149" stroke="#ff6b6b" stroke-width="3.4" stroke-linecap="round"/>
+                  <text class="svg-label" x="458" y="138" font-size="12.5" fill="#ffb3b3">失联点</text>
                   <circle cx="170" cy="186" r="4.6" fill="#f5c76b"/>
                   <path d="M170,172 L170,190 M170,190 L162,202 M170,190 L178,202" stroke="#f5c76b" stroke-width="2.8" fill="none" stroke-linecap="round"/>
                   <text class="svg-label" x="100" y="226" font-size="12.5" fill="#ffe6b8">残骸 · 索马里</text>
                   <!-- 推演漂移路径（答对后显示） -->
                   <g id="driftLayer" hidden>
-                    <path id="driftPath" d="M447,163 C412,220 368,248 306,258 C252,264 210,256 186,244 C176,228 172,208 170,186" fill="none" stroke="#f5c76b" stroke-width="4.4" stroke-dasharray="13 9" class="dashmove" marker-end="url(#wGold)"/>
+                    <path id="driftPath" d="M446,150 C444,164 452,180 462,196 C448,212 424,214 400,206 C368,240 330,252 300,258 C252,264 210,256 186,244 C176,228 172,208 170,186" fill="none" stroke="#f5c76b" stroke-width="4.4" stroke-dasharray="13 9" class="dashmove" marker-end="url(#wGold)"/>
                     <g>
                       <circle r="5.5" fill="#f5c76b" stroke="#20160a" stroke-width="1.4">
                         <animateMotion dur="7s" repeatCount="indefinite" rotate="auto"><mpath href="#driftPath"/></animateMotion>
@@ -1305,7 +1520,21 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
                <p class="q-ask" id="wmapQ"><span class="qn">?</span>打捞报告：残骸集中发现于<b>索马里沿岸（约北纬 8°，赤道以北）</b>。向阳号 1 月（隆冬）候东北季风自泉州放洋，仿郑和旧例沿途驻泊候风——<b>入湾失联的具体时节，档案无载</b>。幸存水手回忆："航海钟停摆，<b>不知漂了多久</b>——只记得起初船<b>先向东北</b>漂了许多天；后来一场大风浪过后，<b>天气一日日转凉、海风也渐渐转了向</b>，船又随流<b>一路向西南</b>而去。" 结合北印度洋洋流判断：<b>向阳号失联于哪个季节？</b></p>
                 <div class="opts" id="quiz-wmap"></div>
                 <div class="explain" id="ex-wmap" hidden></div>
+                <div id="quiz-wmap2" hidden style="margin-top:.85rem">
+                  <p class="q-ask"><span class="qn">?</span><b>第二问 · 残骸为何在索马里？</b>——失联季节已定（夏季），完成这场"万里西行"的，是——</p>
+                  <div class="opts" id="wmap2Opts"></div>
+                  <div class="explain" id="ex-wmap2" hidden></div>
+                </div>
                 <div class="reward-line" id="reward-wmap" hidden></div>
+                <div class="card tint-gold" id="caseAnswer" hidden style="margin-top:.8rem">
+                  <div class="card-head"><i class="dot gold"></i><h3 class="h3">结案报告 · 残骸为何在索马里？</h3></div>
+                  <div class="answer-steps">
+                    <div class="a-step"><span class="as-no">壹</span><p><b>判季节</b> —— 日志载船"<b>先向东北</b>漂了许多天"。能把失去动力的船推向东北的，只有<b>夏季顺时针</b>（西南季风驱动）。若冬季失联，逆时针海水向西南，船应一路向西南漂——与"先向东北"矛盾。<b>反证成立：失联于夏。</b></p></div>
+                    <div class="a-step"><span class="as-no">贰</span><p><b>解转向</b> —— 那场"大风浪"是 10—11 月<b>孟加拉湾气旋</b>（季风转换期风暴）；"天气一日日转凉、海风渐渐转了向"＝<b>东北季风渐次建立</b>。不是一场风浪让海转向，是<b>季节的更替</b>让整片海换向——环流反转为冬季逆时针。</p></div>
+                    <div class="a-step"><span class="as-no">叁</span><p><b>重建航路</b> —— 漂至湾内的船被冬季逆时针环流接住：沿印度东岸<b>南下</b> → 绕斯里兰卡 → <b>西南向横渡阿拉伯海</b>（约 3000 公里，一个冬季风季内完成）→ <b>非洲之角</b>向外突出先拦截 → 残骸搁浅索马里北部沿岸（约 8°N）。残骸是"碰到大陆就搁浅"，不是漂到流的终点。</p></div>
+                  </div>
+                  <div class="rulebar" style="margin-top:.7rem"><span class="rk">结论</span><span class="rv"><b>两段漂流 · 两季环流 · 一次接力</b>——失联于夏（顺时针推船东北），季风转换后冬季逆时针调头送船西南。残骸出现在西岸索马里，正是"冬逆夏顺"的<b>铁证</b>。</span></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1315,12 +1544,12 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
       <section class="stage-view" id="stage-somali" data-name="规律的叛逆者" data-sub="索马里冬暖夏寒" data-time="约 4 分钟">
         <div class="stage-head">
           <span class="stage-no">伍</span>
-          <div class="sh-main"><h2>迷雾海域 · 规律的叛逆者</h2><p class="sh-sub">索马里沿岸："世界唯一具有季节性"的洋流 —— 冬暖夏寒之谜</p></div>
+<div class="sh-main"><h2>迷雾海域 · 规律的叛逆者</h2><span class="sh-q">（低纬的流，一定暖吗？）</span><p class="sh-sub">索马里沿岸："世界唯一具有季节性"的洋流 —— 冬暖夏寒之谜</p></div>
           <div class="sh-side"><span class="crack-badge" data-crack="somali"><i class="pulse"></i>破案点待解</span></div>
         </div>
         <div class="stage-body scroll"><div class="stage-wrap">
           <div class="scrap-quote">
-            <p class="sq-t">日志 · 残页三 · 背面新增</p>
+            <p class="sq-t">日志 · 残页三</p>
             <p class="sq-b">"打捞到的海图标着——冬季，索马里沿岸是<b>暖流</b>；夏季，这里却是<b>寒流</b>……"</p>
             <p class="sq-f">同一个地方 · 洋流性质随季节反转 —— 它既是规律的叛逆者，又是规律的忠实信徒</p>
           </div>
@@ -1404,12 +1633,12 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
       <section class="stage-view" id="stage-impact" data-name="海流的指纹" data-sub="洋流的影响" data-time="约 8 分钟">
         <div class="stage-head">
           <span class="stage-no">陆</span>
-          <div class="sh-main"><h2>残页三 · 海流的指纹</h2><p class="sh-sub">洋流对气候 · 渔场 · 航行 · 污染的影响 —— 洋流从不孤立，它的影响写在海岸上</p></div>
+<div class="sh-main"><h2>海流的指纹 · 洋流的影响</h2><span class="sh-q">（洋流如何影响人类？）</span><p class="sh-sub">洋流对气候 · 渔场 · 航行 · 污染的影响 —— 洋流从不孤立，它的影响写在海岸上</p></div>
           <div class="sh-side"><span class="crack-badge" data-crack="impact"><i class="pulse"></i>破案点待解</span></div>
         </div>
         <div class="stage-body scroll"><div class="stage-wrap">
           <div class="scrap-quote">
-            <p class="sq-t">日志 · 残页三</p>
+<p class="sq-t">日志 · 残页三 · 续页</p>
             <p class="sq-b">"索马里沿岸<b>海雾弥漫、鱼群密布</b>，可岸边却是<b>贫瘠的沙漠</b>……"</p>
             <p class="sq-f">同一段海岸 · 三种完全相反的景象 —— 这就是洋流的"指纹"</p>
           </div>
@@ -1474,16 +1703,16 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
               <text class="svg-label" x="484" y="46" font-size="16" fill="#a7ddfb">② 上升补偿流渔场</text>
               <text class="svg-note" x="484" y="68" font-size="12.5">秘鲁渔场（离岸风驱动）· 夏季索马里同理</text>
               <rect x="484" y="86" width="380" height="200" rx="10" fill="rgba(29,111,156,.34)"/>
-              <path class="svg-land" d="M484,86 L556,86 C540,160 536,240 560,286 L484,286 Z"/>
-              <text class="svg-note" x="496" y="176" font-size="12.5" fill="#cfe4f2">海岸</text>
-              <line x1="560" y1="112" x2="700" y2="112" stroke="#f5c76b" stroke-width="3.6" marker-end="url(#iGold)"/>
-              <text class="svg-note" x="716" y="117" font-size="12.5" fill="#f5c76b">离岸风</text>
+              <path class="svg-land" d="M886,86 L818,86 C832,160 836,240 812,286 L886,286 Z"/>
+              <text class="svg-note" x="858" y="176" font-size="12.5" fill="#cfe4f2" writing-mode="tb" letter-spacing="4">海岸</text>
+              <line x1="806" y1="112" x2="666" y2="112" stroke="#f5c76b" stroke-width="3.6" marker-end="url(#iGold)"/>
+              <text class="svg-note" x="596" y="104" font-size="12.5" fill="#f5c76b">离岸风（向左吹离海岸）</text>
               <g stroke="#49c2f5" stroke-width="4.4" marker-end="url(#iCold)">
-                <line x1="592" y1="272" x2="592" y2="168"/><line x1="626" y1="276" x2="626" y2="188"/>
+                <line x1="748" y1="272" x2="748" y2="168"/><line x1="784" y1="276" x2="784" y2="188"/>
               </g>
-              <text class="svg-note" x="566" y="256" font-size="12" fill="#a7ddfb">深层冷海水上泛</text>
+              <text class="svg-note" x="580" y="256" font-size="12" fill="#a7ddfb">深层冷海水上泛</text>
               <g fill="#8fdcf5">
-                <use href="#fishG" x="690" y="160"/><use href="#fishG" x="760" y="182"/><use href="#fishG" x="716" y="214"/>
+                <use href="#fishG" x="610" y="160"/><use href="#fishG" x="680" y="182"/><use href="#fishG" x="644" y="214"/>
               </g>
               <text class="svg-note" x="484" y="312" font-size="12.5" fill="#cfe4f2">离岸风抽走表层水 → 冷海水上泛 → 饵料充足</text>
             </svg>
@@ -1522,8 +1751,8 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
       <section class="stage-view" id="stage-pk" data-name="终极对决" data-sub="失联真相 PK 赛" data-time="约 10 分钟">
         <div class="stage-head">
           <span class="stage-no">柒</span>
-          <div class="sh-main"><h2>残页四 · 终极对决</h2><p class="sh-sub">失联真相 PK 赛 —— 四支科考队并成两大阵营、讲台两席对决，答对推进"还原真相"进度条</p></div>
-          <div class="sh-side"><span class="badge gold" id="bankCount">题库 8 题</span></div>
+<div class="sh-main"><h2>残页四 · 终极对决</h2><span class="sh-q">（你能独立还原真相吗？）</span><p class="sh-sub">失联真相 PK 赛 —— 四支科考队并成两大阵营、讲台两席对决，答对推进"还原真相"进度条</p></div>
+<div class="sh-side"><span class="badge gold" id="bankCount">题库 6 题</span></div>
         </div>
         <div class="stage-body scroll"><div class="stage-wrap">
 
@@ -1595,7 +1824,7 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
             <div class="quizbox" id="quizbox" style="margin-top:.8rem">
               <div class="quiz-top">
                 <span class="badge gold" id="qGroup">第一关</span>
-                <span class="badge" id="qIndex">第 1 / 8 题</span>
+<span class="badge" id="qIndex">第 1 / 6 题</span>
                 <span class="sp"></span>
                 <span class="streak" id="qStreak" hidden></span>
                 <span class="timer" id="qTimer">30</span>
@@ -1644,7 +1873,7 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
       <section class="stage-view" id="stage-verdict" data-name="结案陈词" data-sub="真相只有一个" data-time="约 2 分钟">
         <div class="stage-head">
           <span class="stage-no">捌</span>
-          <div class="sh-main"><h2>结案陈词 · 真相只有一个</h2><p class="sh-sub">四页日志合一 —— 向阳号失联百年的真相，现在揭晓</p></div>
+<div class="sh-main"><h2>结案陈词 · 真相只有一个</h2><span class="sh-q">（真相大白之后——人类如何利用洋流、避免悲剧？）</span><p class="sh-sub">四页日志合一 —— 向阳号失联百年的真相，现在揭晓</p></div>
           <div class="sh-side"><button class="btn btn-ghost btn-sm" id="btnPrint" type="button">🖨 打印课堂小结</button></div>
         </div>
         <div class="stage-body scroll"><div class="stage-wrap">
@@ -1669,10 +1898,10 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
 
           <div class="card" style="margin-top:1rem">
             <div class="card-head"><i class="dot gold"></i><h3 class="h3">结案证词 · 三段真相</h3></div>
-            <div class="truth-line" data-tl="0"><span class="tl-no">Ⅰ</span><p><b>不是神秘力量</b>——是一支<b>听风指挥的季风洋流</b>：风往哪吹，表层海水就往哪流，失去动力的船就往哪漂。"向阳号"百年谜案的答案，就写在北印度洋<b>"冬逆夏顺"</b>的环流规律里。</p></div>
-            <div class="truth-line" data-tl="1"><span class="tl-no">Ⅱ</span><p><b>季节铁证（两段漂流）</b>——日志载船"<b>先向东北漂了许多天；大风浪过后天气转凉、海风渐转，又随流向西南</b>"：向东北＝<b>夏季顺时针</b>推船，锁定<b>失联于夏</b>；那场大风浪是 10—11 月<b>季风转换期</b>孟加拉湾气旋的写照——气旋过后东北季风渐次建立、天气转凉，环流反转为<b>冬季逆时针</b>，把船调头向西南、横穿阿拉伯海送抵索马里（风向反转靠的是<b>季节渐变</b>，非一场风浪之功）。残骸在西岸，正是<b>跨季节漂流</b>与"冬逆夏顺"的铁证。</p></div>
-            <div class="truth-line" data-tl="2"><span class="tl-no">Ⅲ</span><p><b>洋流的指纹</b>——海雾、渔场、沿岸沙漠，甚至索马里"<b>冬暖夏寒</b>"的温度记录，都是这股洋流留下的证据。<b>洋流不是神话，是规律。</b>读懂分布图，就能读懂一片海域的"性格"。</p></div>
-          </div>
+            <div class="truth-line" data-tl="0"><span class="tl-no">Ⅰ</span><p><b>推手（概念）</b>——不是神秘力量，是<b>洋流</b>：海水常年、稳定、大规模的定向流动。风海流<b>听风指挥</b>——季风一换，流向就换。</p></div>
+            <div class="truth-line" data-tl="1"><span class="tl-no">Ⅱ</span><p><b>失联季节、搁浅索马里（铁证）</b>——一张分布图就是大海的路牌：日志载“先向东北漂”＝<b>夏季顺时针</b>，失联于<b>夏</b>；入冬环流反转，把船调头横渡阿拉伯海、搁浅<b>索马里</b>。<b>两段漂流，一次接力。</b></p></div>
+            <div class="truth-line" data-tl="2"><span class="tl-no">Ⅲ</span><p><b>候风放洋（影响与利用）</b>——对人类：郑和<b>候风放洋</b>、航线<b>顺流而行</b>；对环境：<b>送暖送寒</b>，渔场、海雾由此生。读懂洋流，<b>趋利避害</b>。</p></div>
+            </div>
 
           <div class="card" style="margin-top:1rem">
             <div class="card-head"><i class="dot gold"></i><h3 class="h3">知识框架 · 一节课连成一张图</h3></div>
@@ -1688,6 +1917,8 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
               <div class="kc-node" data-kc="4"><div class="kc-t">索马里</div><div class="kc-d">冬暖夏寒<br/>向岸堆 / 离岸抽</div></div>
               <span class="kc-arrow">→</span>
               <div class="kc-node" data-kc="5"><div class="kc-t">影响</div><div class="kc-d">气候 · 渔场<br/>航行 · 污染</div></div>
+              <span class="kc-arrow">→</span>
+              <div class="kc-node" data-kc="6"><div class="kc-t">利用</div><div class="kc-d">候风放洋 · 航线<br/>渔场 · 治污</div></div>
             </div>
             <div class="rulebar" style="margin-top:.8rem"><span class="rk">板书口诀</span><span class="rv">低纬暖、高纬寒，暖往高纬寒往低 · <b>北顺南逆（中低纬）、北逆（中高纬）、冬逆夏顺（印度洋）</b> · 索马里冬暖夏寒：向岸堆热水、离岸抽冷水</span></div>
           </div>
@@ -1699,7 +1930,7 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
             </div>
             <div class="card">
               <div class="card-head"><i class="dot"></i><h3 class="h3">呼应</h3></div>
-              <p style="font-family:var(--serif);font-weight:900;font-size:clamp(1rem,1.5vw,1.25rem);line-height:1.7">"洋流不是神话，是规律。<br/>读懂分布图，就能读懂一片海域的性格。"</p>
+              <p style="font-family:var(--serif);font-weight:900;font-size:clamp(1rem,1.5vw,1.25rem);line-height:1.7">"宝船与失联船，同一条水路——<br/>差别只在：人是否读懂了洋流。"</p>
             </div>
           </div>
         </div></div>
@@ -1709,12 +1940,12 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
     <!-- ============ 右栏 · 工具收纳 ============ -->
     <aside id="rail" aria-label="课堂工具">
       <button class="rail-btn" id="railMenu" type="button" aria-label="主菜单"><span>☰</span><span class="tip">主菜单 · 环节目录 (C)</span></button>
+      <button class="rail-btn" id="railProj" type="button" aria-label="投影放大"><span>🔍</span><span class="tip">投影放大字号</span></button>
       <button class="rail-btn" id="railConsole" type="button" aria-label="课堂控制台"><span>⚙</span><span class="tip">课堂控制台</span></button>
       <button class="rail-btn" id="railRoll" type="button" aria-label="随机点名"><span>🎲</span><span class="tip">随机点名 (R)</span></button>
       <button class="rail-btn" id="railInk" type="button" aria-label="批注画笔"><span>✎</span><span class="tip">批注画笔 (B)</span></button>
       <span class="rail-sp"></span>
       <button class="rail-btn" id="railSfx" type="button" aria-label="音效开关"><span>🔊</span><span class="tip">音效开关</span></button>
-      <button class="rail-btn" id="railProj" type="button" aria-label="投影放大"><span>🔍</span><span class="tip">投影放大字号</span></button>
       <button class="rail-btn" id="railFull" type="button" aria-label="全屏"><span>⛶</span><span class="tip">全屏 (F)</span></button>
       <button class="rail-btn" id="railWipe" type="button" aria-label="重置进度"><span>↺</span><span class="tip">重置本课进度</span></button>
     </aside>
@@ -1728,6 +1959,22 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
     <span id="footHint">空格 下一步 · ←→ 环节 · 1~2 抢答 · R 点名</span>
     <button class="btn btn-primary btn-sm" id="footNext" type="button">下一步 <span class="arrow">→</span></button>
   </footer>
+</div>
+
+<!-- ============ 地图放大绘图层 ============ -->
+<div id="mapZoom" hidden>
+  <p class="mz-tip">👆 手指 / 鼠标直接在海面上画航线 —— 底部换颜色与粗细 · ↩ 撤销 · 🗑 清空 · Esc 收起</p>
+  <div class="mz-box" id="mzBox"><canvas id="mzCanvas"></canvas></div>
+  <div class="mz-bar">
+    <span id="mzInks" style="display:flex;gap:.45rem;align-items:center"></span>
+    <span class="mz-sep"></span>
+    <button class="mz-sz on" data-sz="2" type="button">细</button>
+    <button class="mz-sz" data-sz="4.5" type="button">粗</button>
+    <span class="mz-sep"></span>
+    <button class="btn btn-ghost btn-sm" id="mzUndo" type="button">↩ 撤销</button>
+    <button class="btn btn-ghost btn-sm" id="mzClear" type="button">🗑 清空</button>
+    <button class="btn btn-sea btn-sm" id="mzClose" type="button">✕ 收起</button>
+  </div>
 </div>
 
 <!-- ============ 右侧面板 · 主菜单 ============ -->
@@ -1854,6 +2101,10 @@ L438,-470L455,-473L477,-472L498,-473L490,-479L501,-485L512,-485L530,-490L555,-49
 
 <div id="toast" aria-live="polite"></div>
 
+<!-- ============ 专注全屏按钮（中间内容独占全屏，Esc 退出） ============ -->
+<button id="zenBtn" type="button" title="专注全屏：只看中间内容 · 字体再放大（Esc 退出）" aria-label="专注全屏">⛶</button>
+<button id="zenInkBtn" type="button" title="批注画笔（B）" aria-label="批注画笔" hidden>✎</button>
+
 <!-- ============ 打印用课堂小结 ============ -->
 <div id="printSheet">
   <h1>追缉洋流 · 向阳号失联谜案 —— 课堂小结</h1>
@@ -1952,6 +2203,27 @@ var Sfx = (function(){
     wrong:  function(){ tone(300,.14,'sawtooth',.1); tone(200,.22,'sawtooth',.09,.11); },
     unlock: function(){ tone(523,.12,'sine',.13); tone(784,.14,'sine',.12,.1); tone(1046,.24,'sine',.12,.21); },
     win:    function(){ [523,659,784,1046].forEach(function(f,i){ tone(f,.22,'sine',.13,i*.11); }); },
+    /* 消消乐式过关音：五连上行亮铃 + 欢快小尾句（PK 答对专用） */
+    candy:  function(){
+      [1047,1319,1568,2093,2637].forEach(function(f,i){
+        tone(f,.16,'sine',.13,i*.085);
+        tone(f*2,.10,'sine',.05,i*.085);
+      });
+      tone(784,.10,'sine',.11,.52);
+      tone(1047,.12,'sine',.12,.61);
+      tone(1319,.30,'sine',.11,.70);
+      tone(1568,.30,'sine',.08,.72);
+    },
+    /* 语音播报（Good/Great/Amazing/Unbelievable）——跟随音效开关 */
+    say:    function(text){
+      if(!enabled || !window.speechSynthesis) return;
+      try{
+        speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US'; u.rate = 1.05; u.pitch = 1.15; u.volume = 1;
+        speechSynthesis.speak(u);
+      }catch(e){}
+    },
     spin:   function(){ tone(1500,.022,'square',.03); },
     lock:   function(){ sweep(900,300,.22,.14); tone(1320,.16,'sine',.12,.1); }
   };
@@ -1976,14 +2248,14 @@ function toast(msg, kind){
    3. 课程数据
    ============================================================ */
 var STAGES = [
-  {id:'prologue', no:'壹', name:'迷案初现',   sub:'向阳号失联谜案'},
-  {id:'concept',  no:'贰', name:'看不见的推手', sub:'洋流的概念'},
-  {id:'classify', no:'叁', name:'暖寒有据',   sub:'洋流的分类'},
-  {id:'wmap',     no:'肆', name:'全球环流',   sub:'世界洋流分布规律'},
-  {id:'somali',   no:'伍', name:'规律的叛逆者', sub:'索马里冬暖夏寒'},
-  {id:'impact',   no:'陆', name:'海流的指纹',  sub:'洋流的影响'},
-  {id:'pk',       no:'柒', name:'终极对决',   sub:'失联真相 PK 赛'},
-  {id:'verdict',  no:'捌', name:'结案陈词',   sub:'真相只有一个'}
+  {id:'prologue', no:'壹', name:'迷案初现',   sub:'向阳号失联谜案',   q:'残骸为何漂到索马里？'},
+  {id:'concept',  no:'贰', name:'看不见的推手', sub:'洋流的概念',     q:'是什么在推船？'},
+  {id:'classify', no:'叁', name:'暖寒有据',   sub:'洋流的分类',     q:'暖流还是寒流？'},
+  {id:'wmap',     no:'肆', name:'全球环流',   sub:'世界洋流分布规律', q:'失联于哪个季节？'},
+  {id:'somali',   no:'伍', name:'规律的叛逆者', sub:'索马里冬暖夏寒',  q:'低纬一定暖吗？'},
+  {id:'impact',   no:'陆', name:'海流的指纹',  sub:'洋流的影响',     q:'洋流如何影响人类？'},
+  {id:'pk',       no:'柒', name:'终极对决',   sub:'失联真相 PK 赛',  q:'真相是什么？'},
+  {id:'verdict',  no:'捌', name:'结案陈词',   sub:'真相只有一个',    q:'如何结案？'}
 ];
 var CRACK_KEYS = ['concept','classify','wmap','somali','impact'];
 
@@ -2024,19 +2296,16 @@ var CLUES = {
 };
 
 var MYST = [
-  {id:'m1', lock:'🔒', t:'为何绕道印度洋', hint:'锁① · 在「陆 · 海流的指纹」环节解锁', openAt:'impact', openTxt:'✔ 借季风与洋流"顺水行舟"——顺流省时省燃料，是航海的千年智慧。'},
-  {id:'m2', lock:'🔒', t:'"看不见的海流"是什么', hint:'锁② · 在「贰 · 看不见的推手」环节解锁', openAt:'concept', openTxt:'✔ 是洋流——海水常年稳定、沿一定方向的大规模流动，风平浪静也在推船。'},
-  {id:'m3', lock:'🔒', t:'残骸为何在索马里', hint:'锁③ · 全课最大悬念 · 在「肆 · 全球环流」环节解锁', openAt:'wmap', openTxt:'✔ 日志"先东北、后西南"两段漂流——夏季顺时针把船推向东北（失联于夏）；十月季风转，冬季逆时针把船调头向西南、送抵索马里。残骸在西岸，藏着跨季节的漂流密码。'}
+  {id:'m1', lock:'🔒', t:'是谁把船推向了非洲', hint:'锁① · 总悬念 · 在「贰 · 看不见的推手」环节解锁', openAt:'concept', openTxt:'✔ 是洋流——海水常年稳定、沿一定方向的大规模流动，风平浪静也在推船。'},
+  {id:'m2', lock:'🔒', t:'失联何时？残骸为何在索马里', hint:'锁② · 全课最大悬念 · 在「肆 · 全球环流」环节解锁', openAt:'wmap', openTxt:'✔ 日志"先东北、后西南"两段漂流——夏季顺时针把船推向东北（失联于夏）；十月季风转，冬季逆时针把船调头向西南、送抵索马里。残骸在西岸，藏着跨季节的漂流密码。'},
+  {id:'m3', lock:'🔒', t:'郑和为何候风放洋', hint:'锁③ · 在「陆 · 海流的指纹」环节解锁', openAt:'impact', openTxt:'✔ 借季风与洋流"顺水行舟"——顺流省时省燃料，是航海的千年智慧。'}
 ];
 
 /* 概念判定游戏数据 */
 var JUDGE = [
   {t:'墨西哥湾的海水，终年稳定地向东北方向大规模流动', k:true,  why:'常年 · 稳定 · 一定方向 · 大规模——四个特征全中。这是墨西哥湾暖流。'},
-  {t:'钱塘江口的海水，每天两次涨落，方向反复变换', k:false, why:'这是潮汐——方向与时间反复变化，不是"常年稳定地朝一个方向流动"。'},
-  {t:'台风过境时，海面掀起数米高的巨浪', k:false, why:'这是风浪——风起浪涌、风停浪息，时间尺度太短，也不是洋流。'},
-  {t:'秘鲁沿岸的海水，常年自南向北做大规模流动补偿', k:true,  why:'常年 · 稳定 · 方向一定（自南向北）· 规模大——这是秘鲁寒流（上升补偿流）。'},
-  {t:'海底地震骤然引发的海水剧烈涌动', k:false, why:'这是海啸——突发、短暂，虽然规模大，但绝不"常年稳定"。'},
-  {t:'北大西洋的暖水，终年源源不断流向西欧海岸', k:true,  why:'这正是北大西洋暖流——常年、稳定、大规模，最典型的洋流。'}
+  {t:'赤道附近的海水，终年自西向东大规模流动，方向与两侧信风吹送的洋流相反', k:true,  why:'这是<b>赤道逆流</b>——虽逆风而行，却如假包换是洋流（<b>补偿流</b>：补偿信风源源不断带走的海水）。常年、稳定、定方向、大规模四要素俱全——<b>是不是洋流看特征，不看顺不顺风</b>。'},
+  {t:'海底地震骤然引发的海水剧烈涌动', k:false, why:'这是海啸——突发、短暂，虽然规模大，但绝不"常年稳定"。'}
 ];
 
 /* 破案点单选题（classify / wmap / somali / impact） */
@@ -2060,6 +2329,8 @@ var CRACKS = {
    ============================================================ */
 var Case = (function(){
   var st = LS.get('xy.case', { pages:[], clues:[], myst:[], solved:{}, p3segs:[] });
+  /* 存档损坏防御：字段缺失时回退默认结构，避免迁移代码抛错白屏 */
+  if(!Array.isArray(st.pages)) st.pages = []; if(!Array.isArray(st.p3segs)) st.p3segs = []; if(!st.solved) st.solved = {};
   /* 旧存档迁移：已有 p3 的视为主页已解锁；已破对应破案点的补齐残页三各段 */
   if(!st.p3segs) st.p3segs = [];
   if(st.pages.indexOf('p3')>=0 && st.p3segs.indexOf('main')<0) st.p3segs.push('main');
@@ -2232,7 +2503,7 @@ var Case = (function(){
       p1:'残页一未解锁——完成环节「贰 · 看不见的推手」的判定游戏（答对至少 4 条）即可解锁',
       p2:'残页二未解锁——完成环节「叁 · 暖寒有据」的破案点即可解锁',
       p3:'残页三未解锁——完成环节「肆 · 全球环流」的航迹推演即可解锁（伍/陆 环节补全背面与续页）',
-      p4:'残页四未解锁——打完环节「柒 · 终极对决」全部 8 题（真相还原）即可解锁'
+      p4:'残页四未解锁——打完环节「柒 · 终极对决」全部 6 题（真相还原）即可解锁'
     };
     return map[id]||'完成对应环节的破案点后解锁';
   }
@@ -2273,7 +2544,7 @@ var Case = (function(){
   };
   function onEnterStage(id){
     (AUTO_CLUES[id]||[]).forEach(function(c){ gainClue(c, true); });
-    if(id==='impact') openMyst('m1', true);
+    if(id==='impact') openMyst('m3', true);
     renderStats();
   }
 
@@ -2395,7 +2666,7 @@ var Judge = (function(){
     if(dot) dot.className = ok?'ok':'bad';
     if(ok){
       rights++;
-      if(lit<4){
+      if(lit<JUDGE.length){
         var c = el.corners.children[lit];
         if(c){ c.classList.add('lit'); c.textContent='✓'; }
         lit++;
@@ -2411,17 +2682,17 @@ var Judge = (function(){
     setTimeout(nextItem, ok?1250:2100);
   }
   function finishRound(){
-    if(rights>=4 && lit>=4){
+    if(rights>=JUDGE.length && lit>=JUDGE.length){
       showDone();
       Case.solveCrack('concept');
       Case.gainPage('p1');
       Case.gainClue('c_indian');
-      Case.openMyst('m2');
+      Case.openMyst('m1');
       var rw = $('#reward-concept');
       rw.hidden=false;
-      rw.innerHTML='<span class="rw-ic">📜</span><span><b>残页一解锁！</b>残页上浮出「北印度洋」字样——推船的"看不见的力量"确认为<b>洋流</b>。谜团②开锁。</span>';
+      rw.innerHTML='<span class="rw-ic">📜</span><span><b>残页一解锁！</b>残页上浮出「北印度洋」字样——推船的"看不见的力量"确认为<b>洋流</b>。锁①开锁。</span>';
     } else {
-      el.stmt.innerHTML='本轮点亮 '+lit+' / 4 角（答对 '+rights+' / '+JUDGE.length+' 条）。<span class="mk">至少答对 4 条才能点亮残页四角——再试一轮！</span>';
+      el.stmt.innerHTML='本轮点亮 '+lit+' / '+JUDGE.length+' 角（答对 '+rights+' / '+JUDGE.length+' 条）。<span class="mk">全部答对才能点亮残页——再试一轮！</span>';
       el.fb.className='judge-fb';
       el.fb.textContent='';
       var again = document.createElement('button');
@@ -2510,6 +2781,13 @@ function crackReward(key){
    ============================================================ */
 var Wmap = (function(){
   var switched = false;
+
+  /* 第二问：残骸为何在索马里（共用同一段水手回忆，第一问答对后出现） */
+  var WQ2 = {
+    opts:['夏季顺时针环流直接把船送到索马里','季风转换后，冬季逆时针环流把船调头向西南，横渡阿拉伯海送抵索马里','那场大风浪（气旋）把船一路吹到了索马里'],
+    ans:1,
+    why:'夏季顺时针只能推船<b>向东北</b>（A 方向反了）；一场风浪是"天尺度"，风停浪息，绝无可能横渡三千公里（C 混淆了风浪与洋流——贰环节已辨析）。真正完成送抵的，是<b>季风转换后的冬季逆时针环流</b>：沿印度东岸南下 → 绕斯里兰卡 → 西南向横渡阿拉伯海（约 3000 公里，一个冬季风季内完成）→ <b>非洲之角</b>外突先拦截 → 残骸搁浅索马里北部沿岸（约 8°N）。<b>两段漂流、两季环流、一次接力。</b>'
+  };
   function isAnswered(){ return Case.solved('wmap'); }
   function render(){
     renderCrackQuiz('wmap');
@@ -2528,6 +2806,7 @@ var Wmap = (function(){
     }
     var layer = $('#driftLayer'); if(layer) layer.setAttribute('hidden','');
     var rw = document.getElementById('reward-wmap'); if(rw) rw.hidden = true;
+    var q2 = $('#quiz-wmap2'); if(q2 && !isAnswered()){ q2.hidden = true; }
   }
   function onSeasonSwitch(which){
     if(isAnswered()) return;
@@ -2540,8 +2819,64 @@ var Wmap = (function(){
       toast('已观察冬夏环流差异，可以作答了','ok');
     }
   }
+  function addDone(id, txt){
+    var el = document.getElementById(id);
+    if(!el){
+      el = document.createElement('p'); el.id = id;
+      el.style.cssText = 'margin:.5rem 0 0;color:#8fe6a8;font-size:.95rem;line-height:1.6';
+      var anchor = id==='q1done' ? $('#quiz-wmap') : $('#reward-wmap');
+      if(anchor && anchor.parentNode) anchor.parentNode.insertBefore(el, anchor);
+    }
+    el.innerHTML = txt;
+  }
   function onAnswerOk(){
     setStep(2,'done'); setStep(3,'on');
+    /* 第一问答对 → 第一题就地收起（题干水手回忆保留），第二问在原位跳出 */
+    var q1 = $('#quiz-wmap'); if(q1) q1.style.display = 'none';
+    var e1 = $('#ex-wmap'); if(e1) e1.hidden = true;
+    addDone('q1done','✓ 第一问已破解：失联于<b>夏季</b>——夏季顺时针，海水被推向东北，与「先向东北漂」吻合。');
+    var q2 = $('#quiz-wmap2');
+    if(q2){
+      q2.hidden = false;
+      var box2 = $('#wmap2Opts');
+      box2.className = 'opts';
+      box2.innerHTML = WQ2.opts.map(function(o,i){
+        return '<button class="opt" data-w2="'+i+'" type="button"><span class="key">'+'ABC'[i]+'</span><span class="txt">'+o+'</span></button>';
+      }).join('');
+      $$('#wmap2Opts .opt').forEach(function(b){
+        b.addEventListener('click', function(){ chooseW2(+b.getAttribute('data-w2')); });
+      });
+      var ex2 = $('#ex-wmap2'); if(ex2) ex2.hidden = true;
+      Sfx.unlock();
+      toast('第一问判定正确！请作答第二问：残骸为何在索马里？','ok');
+    }
+  }
+  function chooseW2(oi){
+    var ok = (oi===WQ2.ans);
+    $$('#wmap2Opts .opt').forEach(function(b){
+      var v = +b.getAttribute('data-w2');
+      if(v===WQ2.ans) b.classList.add('correct');
+      else if(v===oi) b.classList.add('wrong');
+    });
+    var ex2 = $('#ex-wmap2');
+    ex2.hidden = false;
+    ex2.innerHTML='<div class="ex-k">'+(ok?'? 正确':'? 再想想')+'　正确答案：<span class="ex-key">'+'ABC'[WQ2.ans]+'</span></div><div class="ex-v">'+WQ2.why+'</div>';
+    ok ? Sfx.correct() : Sfx.wrong();
+    if(ok){
+      var _b2 = $('#wmap2Opts'); if(_b2) _b2.style.display = 'none';
+      var _e2 = $('#ex-wmap2'); if(_e2) _e2.hidden = true;
+      var _q2b = $('#quiz-wmap2'); if(_q2b) _q2b.style.display = 'none';
+      addDone('q2done','✓ 第二问已破解：季风转换后，冬季逆时针环流调头向西南——两段漂流、一次接力，送抵索马里。');
+      finishWmap();
+    }
+    else {
+      setTimeout(function(){
+        $$('#wmap2Opts .opt').forEach(function(b){ b.classList.remove('wrong'); });
+        toast('提示：夏季的箭头把船推向哪一侧？风浪与洋流，谁才是"常年稳定"的推手？');
+      }, 900);
+    }
+  }
+  function finishWmap(){
     setTimeout(function(){
       setStep(3,'done');
       var layer = $('#driftLayer');
@@ -2552,7 +2887,8 @@ var Wmap = (function(){
       Case.solveCrack('wmap');
       Case.gainPage('p3');
       Case.gainClue('c_season');
-      Case.openMyst('m3');
+      Case.openMyst('m2');
+      var ca = $('#caseAnswer'); if(ca) ca.hidden = false;
     }, 600);
   }
   function applySolved(){
@@ -2568,6 +2904,20 @@ var Wmap = (function(){
     ex.innerHTML='<div class="ex-k">✓ 已破解　正确答案：<span class="ex-key">B</span></div><div class="ex-v">'+CRACKS.wmap.why+'</div>';
     var rw=$('#reward-wmap');
     if(rw){ rw.hidden=false; rw.innerHTML='<span class="rw-ic">☀</span><span><b>残页三 · 主页已解锁</b>——夏季顺时针推船向东北（失联于夏）；十月季风转，冬季逆时针把船调头向西南、送抵索马里。</span>'; }
+    var cab = $('#caseAnswer'); if(cab) cab.hidden = false;
+    var q1x = $('#quiz-wmap'); if(q1x) q1x.style.display = 'none';
+    var e1x = $('#ex-wmap'); if(e1x) e1x.hidden = true;
+    addDone('q1done','✓ 第一问已破解：失联于<b>夏季</b>——夏季顺时针，海水被推向东北，与「先向东北漂」吻合。');
+    addDone('q2done','✓ 第二问已破解：季风转换后，冬季逆时针环流调头向西南——两段漂流、一次接力，送抵索马里。');
+    var q2 = $('#quiz-wmap2'); if(q2){ q2.hidden = true; q2.style.display = 'none'; }
+    var box2 = $('#wmap2Opts');
+    if(box2 && !box2.children.length){
+      box2.innerHTML = WQ2.opts.map(function(o,i){
+        return '<button class="opt'+(i===WQ2.ans?' correct':' dim')+'" data-w2="'+i+'" type="button" disabled><span class="key">'+'ABC'[i]+'</span><span class="txt">'+o+'</span></button>';
+      }).join('');
+    }
+    var ex2 = $('#ex-wmap2');
+    if(ex2){ ex2.hidden=true; ex2.innerHTML='<div class="ex-k">? 已破解　正确答案：<span class="ex-key">'+'ABC'[WQ2.ans]+'</span></div><div class="ex-v">'+WQ2.why+'</div>'; }
   }
   function setStep(n, cls){
     var c = document.querySelector('#wmapSteps .stepchip[data-step="'+n+'"]');
@@ -2709,12 +3059,17 @@ var Roll = (function(){
       var cellH = el.strip.firstElementChild ? el.strip.firstElementChild.offsetHeight : 88;
       var dur = reduced()?0.4:1.9;
       el.strip.style.transition='transform '+dur+'s cubic-bezier(.08,.72,.12,1)';
-      el.strip.style.transform='translateY('+(-(TOTAL-2)*cellH)+'px)';
+      /* 目标格（第 TOTAL-2 格）滚到窗口垂直中线：strip 顶部上移 (TOTAL-2)*cellH 后目标格上沿位于 0，
+         再向下补偿 (stage高/2 - cellH/2) 使目标格中心对齐 stage 中线 */
+      var stageH = el.stage.offsetHeight;
+      el.strip.style.transform='translateY('+(-(TOTAL-2)*cellH + stageH/2 - cellH/2)+'px)';
       var ticks=0, ti=setInterval(function(){ Sfx.spin(); if(++ticks>16) clearInterval(ti); },110);
     });
     setTimeout(function(){
       spinning=false; el.go.disabled=false;
       el.stage.classList.remove('spinning'); el.stage.classList.add('locked');
+      /* 给正中选中的号打高亮（金字放大），上下相邻小字保持原样 */
+      var hitEl = el.strip.children[TOTAL-2]; if(hitEl) hitEl.classList.add('hit');
       Sfx.lock();
       el.sub.innerHTML='请 <b>'+target+'</b> 号同学回答';
       recent.push(target); renderRecent(); save(); el.reset.hidden=false;
@@ -2814,9 +3169,9 @@ var Ink = (function(){
 })();
 
 /* ============================================================
-   12. PK 题库（8 题 · 四关 · 全选择题）
+   12. PK 题库（6 题 · 四关 · 全选择题）
    ============================================================ */
-var GROUPS = { 1:'第一关 · 概念与性质', 2:'第二关 · 成因与分布', 3:'第三关 · 方向与应用', 4:'第四关 · 真相还原' };
+var GROUPS = { 1:'第一关 · 概念与性质', 2:'第二关 · 图判洋流', 3:'第三关 · 方向与应用', 4:'第四关 · 真相还原' };
 var TCOLOR = ['#f5c76b','#49c2f5','#ff7a59','#57d6a3'];
 
 /* 第 6 题题图：等温线判读 */
@@ -2849,8 +3204,8 @@ function figTruth(){
     '<text class="svg-note" x="380" y="330" font-size="16" fill="#8fd0ea">印 度 洋</text>'+
     '<line x1="24" y1="266" x2="700" y2="266" stroke="rgba(245,199,107,.45)" stroke-width="1.4" stroke-dasharray="10 8"/>'+
     '<text class="svg-note" x="30" y="258" font-size="13" fill="#f5c76b">赤道</text>'+
-    '<path d="M440,156 L454,170 M454,156 L440,170" stroke="#ff6b6b" stroke-width="3.4" stroke-linecap="round"/>'+
-    '<text class="svg-label" x="458" y="150" font-size="15" fill="#ffb3b3">失联点（孟加拉湾）</text>'+
+    '<path d="M440,176 L454,190 M454,176 L440,190" stroke="#ff6b6b" stroke-width="3.4" stroke-linecap="round"/>'+
+    '<text class="svg-label" x="458" y="170" font-size="15" fill="#ffb3b3">失联点（孟加拉湾）</text>'+
     '<circle cx="170" cy="186" r="4.6" fill="#f5c76b"/>'+
     '<path d="M170,172 L170,190 M170,190 L162,202 M170,190 L178,202" stroke="#f5c76b" stroke-width="2.8" fill="none" stroke-linecap="round"/>'+
     '<text class="svg-label" x="96" y="226" font-size="15" fill="#ffe6b8">残骸 · 索马里沿岸</text>'+
@@ -2862,14 +3217,11 @@ var BANK = [
     why:'洋流三关键词：<b>常年稳定 · 一定方向 · 大规模</b>。潮汐方向反复、风浪风停即止、海啸骤发短暂——都不是洋流。' },
   { g:1, stem:'判断洋流暖 / 寒性质，根本标准是', opts:['流向','水温与流经海区的对比','纬度','盐度'], ans:'B',
     why:'<b>水温对比</b>是根本标准：水温高于流经海区＝暖流。流向只是"一般规律"——索马里冬季暖流（自较高纬流向较低纬）就是最著名的反例，也是本课防杠关键。' },
-  { g:2, stem:'直布罗陀海峡表层海水由大西洋流向地中海，主因是', opts:['盛行风','密度差异','补偿作用','地转偏向力'], ans:'B',
-    why:'地中海蒸发旺盛、盐度高、<b>密度大</b>、海面低——表层海水由密度小的大西洋流向密度大的地中海，典型的<b>密度流</b>（深层存在反向补偿流）。' },
-  { g:2, stem:'北半球中低纬大洋环流方向是', opts:['顺时针','逆时针','自西向东','自东向西'], ans:'A',
-    why:'中低纬以副热带为中心：<b>北顺南逆</b>——北半球顺时针、南半球逆时针。' },
+
   { g:2, fig:figIso, stem:'读图判断：图中箭头所示的洋流，性质与所在半球分别是', opts:['暖流 · 北半球','寒流 · 北半球','暖流 · 南半球','寒流 · 南半球'], ans:'D',
     why:'<b>寒流 · 南半球</b>。①箭头由水温低的海区（18℃ 侧）流向水温高的海区（22℃ 侧），<b>水温低于流经海区</b>＝寒流；②等温线数值<b>向北递增</b>，越北越暖，说明位于<b>南半球</b>——南半球寒流自南（高纬）向北（低纬）流，与图示一致；等温线凸向低纬（凸向即流向）。' },
-  { g:3, stem:'冬季，北印度洋表层海水流动方向是', opts:['顺时针，海水向东流','逆时针，海水向西 / 西南流','逆时针，海水向东流','顺时针，海水向南流'], ans:'B',
-    why:'冬季<b>东北季风</b>驱动，环流呈<b>逆时针</b>，表层海水总体<b>向西 / 西南</b>流——正指向西侧的索马里。这正是"冬季环流把失联船只送抵索马里"的核心依据（向阳号的送抵段推理，见压轴题）。' },
+  { g:3, stem:'关于洋流对地理环境的影响，下列说法正确的是', opts:['暖流对沿岸气候增温增湿，寒流降温减湿','寒流对沿岸气候增温增湿，暖流降温减湿','洋流只影响气候，与航行、污染无关','洋流只会扩大污染范围，没有任何有利影响'], ans:'A',
+    why:'<b>暖流增温增湿、寒流降温减湿</b>是洋流影响气候的基本规律——西欧温带海洋性气候（北大西洋暖流）与索马里沿岸荒漠（夏季寒流）正是一暖一寒两个例证。洋流还影响<b>渔场</b>（饵料上泛）、<b>航行</b>（顺逆流、海雾、冰山）与<b>污染</b>（加快净化 / 扩大范围）——记住"影响四指纹"。' },
   { g:3, stem:'北海道渔场的主要成因是', opts:['上升补偿流','日本暖流与千岛寒流交汇','盛行风吹拂','密度差异'], ans:'B',
     why:'北海道渔场位于<b>日本暖流 × 千岛寒流交汇处</b>：交汇扰动使营养盐上泛、饵料充足，"水障"又使鱼群集中。上升流成渔场的是秘鲁渔场（A）。' },
   { g:4, fig:figTruth, stem:'【压轴 · 真相还原】日志载船"先向东北漂了许多天；大风浪过后天气转凉、海风渐转，又随流一路向西南"，残骸最终出现在索马里沿岸（约北纬 8°，赤道以北）。综合全案证据，正确的还原是——', opts:['失联于冬季，由冬季逆时针环流直接送抵索马里','失联于夏季（顺时针推船向东北），10—11 月季风转换后由冬季逆时针调头送抵索马里','失联于夏季，由夏季顺时针环流直接送抵索马里','失联于冬季，残骸由南赤道流西送至赤道以南沿岸'], ans:'B',
@@ -2894,8 +3246,8 @@ var Arena = (function(){
   function armAutoNext(){
     clearAuto();
     if(st.mode!=='play') return;
-    var left=3, tip=$('#autoNextTip');
-    if(tip){ tip.hidden=false; tip.textContent='⏱ 3 秒后自动进入下一题 —— 点击本条暂停，便于讲解'; }
+    var left=2, tip=$('#autoNextTip');
+    if(tip){ tip.hidden=false; tip.textContent='⏱ 2 秒后自动进入下一题 —— 点击本条暂停，便于讲解'; }
     autoTick=setInterval(function(){ left--; if(left>0 && tip){ tip.textContent='⏱ '+left+' 秒后自动进入下一题 —— 点击本条暂停'; } },1000);
     autoTid=setTimeout(function(){ clearAuto(); if(st.mode==='play') nextQ(); }, left*1000);
   }
@@ -2906,7 +3258,7 @@ var Arena = (function(){
     var arr=[];
     for(var i=0;i<n;i++){
       var s = saved && saved[i] ? saved[i] : {name:names[i],score:0,right:0,wrong:0};
-      arr.push({name:s.name||names[i], score:s.score|0, right:s.right|0, wrong:s.wrong|0});
+      arr.push({name:s.name||names[i], score:s.score|0, right:s.right|0, wrong:s.wrong|0, streak:0});
     }
     return arr;
   }
@@ -2991,11 +3343,17 @@ var Arena = (function(){
     clearAuto();
     var q = BANK[st.qi]; if(!q) return;
     st.buzzed=null; st.out=[]; st.phase='ask';
+    /* 清理上一题的双栏配图与布局类 */
+    var qb = $('#quizbox'), oldF = qb.querySelector('.qfig-side');
+    if(oldF) oldF.remove();
+    qb.classList.remove('q-duo');
     $('#qGroup').textContent = GROUPS[q.g];
     $('#qIndex').textContent = '第 '+(st.qi+1)+' / '+BANK.length+' 题'+(q.open?' · 说理题':'');
     $('#qStem').innerHTML = q.stem;
     $('#qHint').innerHTML = q.hint ? ('提示：'+q.hint) : '';
     var box = $('#qOpts'); box.innerHTML='';
+    /* 配图挂题卡右栏（双栏读图作答同屏；窄屏由媒体查询回落到选项下方） */
+    function sideFig(f){ qb.insertAdjacentHTML('beforeend','<div class="qfig-side"><figure class="figure">'+f()+'</figure></div>'); qb.classList.add('q-duo'); }
     if(q.open){
       box.innerHTML = '<div class="openref" id="openJudge">'+
         '<div class="or-k">🎤 说理题 · 口头作答，由老师判分</div>'+
@@ -3004,8 +3362,8 @@ var Arena = (function(){
         '<button class="btn btn-sea btn-sm" id="openOk" type="button">✔ 答对（+'+(gain*2)+'）</button>'+
         '<button class="btn btn-danger btn-sm" id="openNo" type="button">✘ 答错'+(loss?('（−'+loss+'）'):'')+'</button>'+
         '<button class="btn btn-ghost btn-sm" id="openRef" type="button">📜 公布参考答案</button></div>'+
-        '<div class="or-v" id="openRefBody" hidden style="margin-top:.7rem">'+q.ref+'</div></div>'+
-        (q.fig?('<figure class="figure" style="margin-top:.6rem;max-width:520px">'+q.fig()+'</figure>'):'');
+        '<div class="or-v" id="openRefBody" hidden style="margin-top:.7rem">'+q.ref+'</div></div>';
+      if(q.fig) sideFig(q.fig);
       $('#openOk').addEventListener('click', function(){ openJudge(true); });
       $('#openNo').addEventListener('click', function(){ openJudge(false); });
       $('#openRef').addEventListener('click', function(){ var r=$('#openRefBody'); if(r) r.hidden=!r.hidden; Sfx.click(); });
@@ -3015,7 +3373,7 @@ var Arena = (function(){
         return '<button class="opt" data-qopt="'+i+'" type="button"><span class="key">'+'ABCD'[i]+'</span><span class="txt">'+o+'</span></button>';
       }).join('');
       $$('#qOpts .opt').forEach(function(b){ b.addEventListener('click', function(){ choose(+b.getAttribute('data-qopt')); }); });
-      if(q.fig){ box.insertAdjacentHTML('beforeend','<figure class="figure" style="margin-top:.6rem;max-width:520px">'+q.fig()+'</figure>'); }
+      if(q.fig) sideFig(q.fig);
     }
     var ex=$('#qExplain'); ex.hidden=true; ex.innerHTML='';
     $('#qStreak').hidden=true;
@@ -3036,8 +3394,18 @@ var Arena = (function(){
     }
     toast(st.teams[i].name+' 抢到！','ok');
   }
-  function choose(oi){
-    var q = BANK[st.qi];
+  /* 连击播报大字特效：Good/Great/Amazing/Unbelievable 弹出动画（消消乐风） */
+  function pkComboFx(word, ci){
+    var old = document.getElementById('pkComboFx'); if(old) old.remove();
+    var el = document.createElement('div');
+    el.id = 'pkComboFx';
+    el.className = 'lv' + ci;
+    el.textContent = word + (ci >= 1 ? '!' : '');
+    document.body.appendChild(el);
+    setTimeout(function(){ if(el.parentNode) el.remove(); }, 1600);
+  }
+
+  function choose(oi){    var q = BANK[st.qi];
     if(!q) return;
     if(st.phase!=='ask'){ toast('本题已判定/已公布答案——点「下一题」继续'); return; }
     if(st.buzzed===null){ toast('先锁定抢答队伍：点计分板任意队伍卡，或按键盘 1~2'); return; }
@@ -3050,11 +3418,19 @@ var Arena = (function(){
     if(ok){
       st.teams[ti].score+=gain; st.teams[ti].right++;
       st.truth = Math.min(BANK.length, st.truth+1);
-      st.phase='done'; Sfx.correct(); renderBoard(); renderTruth();
+      st.phase='done'; Sfx.candy(); renderBoard(); renderTruth();
+      /* 消消乐式连击播报：连对 1=Good 2=Great 3=Amazing 4+=Unbelievable，答错清零 */
+      st.teams[ti].streak = (st.teams[ti].streak|0) + 1;
+      var COMBO = ['Good','Great','Amazing','Unbelievable'];
+      var ci = Math.min(st.teams[ti].streak, 4) - 1;
+      var word = COMBO[ci];
+      Sfx.say(word + (ci>=1 ? '!' : ''));
+      pkComboFx(word, ci);
       var elc=$('#tscore'+ti); if(elc){ elc.classList.add('pop'); setTimeout(function(){ elc.classList.remove('pop'); },480); }
       reveal();
     } else {
       st.teams[ti].score-=loss; st.teams[ti].wrong++;
+      st.teams[ti].streak = 0;
       st.out.push(ti); Sfx.wrong();
       q.__missed=true; q.__wrongPick=pick; q.__wrongTeam=st.teams[ti].name;
       st.buzzed=null; $('#qBuzzed').hidden=true;
@@ -3142,7 +3518,7 @@ var Arena = (function(){
     st.qi=0; st.truth=0; st.mode='play';
     $('#arenaSetup').hidden=true; $('#arenaResult').hidden=true; $('#arenaPlay').hidden=false;
     saveTeams(); renderQ();
-    toast('PK 开始！8 题闯关，还原失联真相','ok');
+      toast('PK 开始！6 题闯关，还原失联真相','ok');
   }
   function fillRecap(){
     var tb = $('#psTable'); if(!tb) return;
@@ -3172,8 +3548,7 @@ var Arena = (function(){
     teams:function(){ return st.teams; },
     isPlay:function(){ return st.mode==='play'; },
     getGain:function(){ return gain; }, setGain:function(v){ gain=v; LS.set('xy.gain',v); },
-    getLoss:function(){ return loss; }, setLoss:function(v){ loss=v; LS.set('xy.loss',v); },
-    reset:function(){ st.teams=defaultTeams(teamsN); st.teams.forEach(function(t){ t.score=0; t.right=0; t.wrong=0; }); st.truth=0; saveTeams(); }
+    reset:function(){ st.teams=defaultTeams(teamsN); st.teams.forEach(function(t){ t.score=0; t.right=0; t.wrong=0; t.streak=0; }); st.qi=0; st.truth=0; st.buzzed=null; st.out=[]; st.phase='ask'; renderBoard(); renderTruth(); },
   };
 })();
 
@@ -3195,7 +3570,7 @@ var Verdict = (function(){
         var tip = document.createElement('p');
         tip.id='p4Hint'; tip.className='sub';
         tip.style.cssText='margin-top:.5rem;color:#ffd0a0';
-        tip.textContent='⏳ 残页四（失联季节）尚未解锁——回到「柒 · 终极对决」打完全部 8 题，即可拼出最终真相。';
+        tip.textContent='⏳ 残页四（失联季节）尚未解锁——回到「柒 · 终极对决」打完全部 6 题，即可拼出最终真相。';
         miss.parentNode.insertBefore(tip, miss.nextSibling);
       }
     } else {
@@ -3300,9 +3675,32 @@ function bindConsole(){
     $('#btnSfx').textContent = on?'🔊 音效：开':'🔇 音效：关';
   });
   $('#railProj').addEventListener('click', function(){
-    var on = document.documentElement.classList.toggle('proj');
-    toast(on?'已放大界面字号，适合投影':'已恢复标准字号');
+    /* 三档投影字号：标准 → 后排×1.5 → 极限×1.8 → 回标准（挂 #workbench，画布坐标不受影响） */
+    var lv = (+(document.documentElement.getAttribute('data-fs')||0) + 1) % 3;
+    document.documentElement.setAttribute('data-fs', lv);
+    document.documentElement.classList.toggle('fs1', lv===1);
+    document.documentElement.classList.toggle('fs2', lv===2);
+    this.querySelector('span').textContent = lv===1?'🔈':(lv===2?'🔊':'🔍');
+    try{ localStorage.setItem('xy.fs', lv); }catch(e){}
+    toast(lv===0?'标准字号（备课/手机浏览）':lv===1?'后排模式 ×1.85 满幅 —— 大屏一体机默认档':'极限模式 ×2.4 —— 最后一排也能看清','ok');
   });
+  /* 启动时恢复上次字号档位（教室一体机刷新后仍是投影档） */
+  (function(){
+    var saved = null;
+    try{ saved = localStorage.getItem('xy.fs'); }catch(e){}
+    var lv;
+    if(saved === null && innerWidth >= 2000){
+      /* 4K大屏一体机（希沃等）首次打开：自动进入后排投影档；笔记本/手机不触发 */
+      lv = 1;
+    } else {
+      lv = +(saved||0);
+    }
+    if(!lv) return;
+    document.documentElement.setAttribute('data-fs', lv);
+    document.documentElement.classList.toggle('fs1', lv===1);
+    document.documentElement.classList.toggle('fs2', lv===2);
+    var b = $('#railProj'); if(b) b.querySelector('span').textContent = lv===1?'🔈':(lv===2?'🔊':'🔍');
+  })();
   function restartGame(){
     if(!confirm('将清除本课全部进度（残页/线索/破案点）、队伍得分与设置，并回到序幕重新开始，确定吗？')) return;
     ['xy.case','xy.teams','xy.teamsN','xy.roll','xy.clock','xy.gain','xy.loss','xy.stage','xy.ink'].forEach(LS.del);
@@ -3335,7 +3733,41 @@ function bindConsole(){
   $('#footPrev').addEventListener('click', Router.prev);
   $('#footNext').addEventListener('click', Router.next);
   $$('[data-goto]').forEach(function(b){ b.addEventListener('click', function(){ Router.go(b.getAttribute('data-goto')); }); });
-  $('#btnDock').addEventListener('click', function(){ $('#dock').classList.toggle('open'); });
+  $('#btnDock').addEventListener('click', function(){
+    /* 先解除收起态；投影档（抽屉态）再切换抽屉开合 */
+    var dock = $('#dock');
+    document.documentElement.classList.remove('dockhide');
+    if(document.documentElement.classList.contains('fs1') || document.documentElement.classList.contains('fs2')){
+      dock.classList.toggle('open');
+    }
+  });
+  $('#dockHide').addEventListener('click', function(e){
+    e.stopPropagation();
+    document.documentElement.classList.add('dockhide');
+    toast('档案栏已收起——点顶部「🗂 档案」随时展开');
+  });
+  $('#zenBtn').addEventListener('click', function(){
+    var on = document.documentElement.classList.toggle('zen');
+    this.textContent = on ? '⤢' : '⛶';
+    var ib = $('#zenInkBtn'); if(ib) ib.hidden = !on;
+    toast(on ? '专注全屏：仅显示中间内容，字体已放大 —— 按 Esc 退出' : '已退出专注全屏');
+  });
+  /* 专注模式下的批注开关：复用 Ink.toggle()，同步按钮高亮态 */
+  $('#zenInkBtn').addEventListener('click', function(){
+    Ink.toggle();
+    this.classList.toggle('on', Ink.isOn());
+  });
+  document.addEventListener('click', function(e){
+  var g = e.target.closest && e.target.closest('.cur-g');
+  if(g){ g.classList.toggle('open'); Sfx.click(); }
+});
+document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && document.documentElement.classList.contains('zen')){
+      document.documentElement.classList.remove('zen');
+      var b = $('#zenBtn'); if(b) b.textContent = '⛶';
+      var ib = $('#zenInkBtn'); if(ib) ib.hidden = true;
+    }
+  });
 
   /* 结案 */
   $$('.truth-line').forEach(function(t){
@@ -3416,15 +3848,116 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 </script>
 
 <script>
-/* 开场封面：点击 / 回车 / 空格 进入（capture 阶段拦截，避免触发主界面的空格快捷键） */
+/* 开场封面 → 教学目标页 → 序幕（点击 / 回车 / 空格逐页进入；?s= 直达环节时两页都跳过） */
 (function(){
   var sp = document.getElementById('splash');
+  var gp = document.getElementById('goalPage');
   if(!sp) return;
-  function go(){ if(sp.classList.contains('off')) return; sp.classList.add('off'); document.removeEventListener('keydown', onKey, true); }
-  function onKey(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); e.stopPropagation(); go(); } }
-  document.getElementById('spStart').addEventListener('click', go);
-  document.addEventListener('keydown', onKey, true);
-  if(new URLSearchParams(location.search).get('s')) go(); /* ?s=直达环节时跳过封面 */
+  var skipAll = !!new URLSearchParams(location.search).get('s');
+  function goGoal(){
+    if(sp.classList.contains('off')) return;
+    sp.classList.add('off');
+    document.removeEventListener('keydown', onKeySp, true);
+    if(gp && !skipAll){ gp.hidden = false; }
+  }
+  function onKeySp(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); e.stopPropagation(); goGoal(); } }
+  function goStage(){
+    if(!gp || gp.hidden) return;
+    gp.hidden = true;
+    document.removeEventListener('keydown', onKeyGp, true);
+  }
+  function onKeyGp(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); e.stopPropagation(); goStage(); } }
+  document.getElementById('spStart').addEventListener('click', goGoal);
+  if(gp){ document.getElementById('gpStart').addEventListener('click', goStage); }
+  document.addEventListener('keydown', onKeySp, true);
+  if(skipAll){ sp.classList.add('off'); } /* ?s=直达：跳过封面与目标页 */
+})();
+</script>
+
+<script>
+/* ============ 地图放大绘图（序幕地图专属画板） ============ */
+(function(){
+  var btn = document.getElementById("mapZoomBtn"); if(!btn) return;
+  var layer = document.getElementById("mapZoom"), box = document.getElementById("mzBox"),
+      cvs = document.getElementById("mzCanvas"), ctx = cvs.getContext("2d"),
+      inksEl = document.getElementById("mzInks");
+  var COLORS = ["#ffffff","#ff5d5d","#ffd34d","#4dc3ff","#7ce38b"];
+  var color = "#ffffff", size = 2, strokes = [], cur = null, inited = false;
+  /* 打开时克隆序幕地图 SVG 垫底（一次性） */
+  function init(){
+    var src = document.querySelector("#stage-prologue svg[aria-label]");
+    if(!src) return false;
+    var svg = src.cloneNode(true); svg.removeAttribute("aria-label"); svg.removeAttribute("role");
+    box.insertBefore(svg, cvs); inited = true; return true;
+  }
+  function fit(){
+    var w = box.clientWidth, hgt = box.clientHeight, dpr = window.devicePixelRatio || 1;
+    if(cvs.width !== Math.round(w*dpr) || cvs.height !== Math.round(hgt*dpr)){
+      cvs.width = Math.round(w*dpr); cvs.height = Math.round(hgt*dpr);
+    }
+    redraw();
+  }
+  function lw(s){ return s * cvs.width / 640; }
+  function drawStroke(s){
+    if(s.pts.length < 2) return;
+    ctx.strokeStyle = s.color; ctx.lineWidth = lw(s.size); ctx.lineCap = "round"; ctx.lineJoin = "round";
+    ctx.beginPath();
+    ctx.moveTo(s.pts[0][0]*cvs.width, s.pts[0][1]*cvs.height);
+    for(var i=1;i<s.pts.length;i++) ctx.lineTo(s.pts[i][0]*cvs.width, s.pts[i][1]*cvs.height);
+    ctx.stroke();
+  }
+  function redraw(){ ctx.clearRect(0,0,cvs.width,cvs.height); strokes.forEach(drawStroke); if(cur) drawStroke(cur); }
+  function rel(e){ var r = cvs.getBoundingClientRect(); return [Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)), Math.min(1,Math.max(0,(e.clientY-r.top)/r.height))]; }
+  /* 颜色按钮 */
+  COLORS.forEach(function(c,i){
+    var b = document.createElement("button"); b.type = "button"; b.className = "mz-ink" + (i===0?" on":"");
+    b.style.background = c; b.title = "画笔颜色";
+    b.addEventListener("click", function(){
+      color = c;
+      Array.prototype.forEach.call(inksEl.children, function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+    });
+    inksEl.appendChild(b);
+  });
+  /* 粗细 */
+  Array.prototype.forEach.call(layer.querySelectorAll(".mz-sz"), function(b){
+    b.addEventListener("click", function(){
+      size = parseFloat(b.getAttribute("data-sz"));
+      Array.prototype.forEach.call(layer.querySelectorAll(".mz-sz"), function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+    });
+  });
+  /* 画笔（Pointer：鼠标/触摸/触控笔统一） */
+  cvs.addEventListener("pointerdown", function(e){
+    e.preventDefault(); try{ cvs.setPointerCapture(e.pointerId); }catch(_e){}
+    cur = { color: color, size: size, pts: [rel(e)] };
+  });
+  cvs.addEventListener("pointermove", function(e){
+    if(!cur) return;
+    var pt = rel(e), last = cur.pts[cur.pts.length-1];
+    var dx = pt[0]-last[0], dy = pt[1]-last[1];
+    if(dx*dx+dy*dy < 0.000006) return; /* 节流 */
+    cur.pts.push(pt);
+    ctx.strokeStyle = cur.color; ctx.lineWidth = lw(cur.size); ctx.lineCap = "round"; ctx.lineJoin = "round";
+    ctx.beginPath(); ctx.moveTo(last[0]*cvs.width, last[1]*cvs.height);
+    ctx.lineTo(pt[0]*cvs.width, pt[1]*cvs.height); ctx.stroke();
+  });
+  function endStroke(){ if(cur){ if(cur.pts.length>1) strokes.push(cur); cur = null; } }
+  cvs.addEventListener("pointerup", endStroke);
+  cvs.addEventListener("pointercancel", endStroke);
+  /* 撤销 / 清空 / 收起 */
+  document.getElementById("mzUndo").addEventListener("click", function(){ strokes.pop(); redraw(); });
+  document.getElementById("mzClear").addEventListener("click", function(){ strokes = []; redraw(); });
+  function close(){ layer.hidden = true; }
+  document.getElementById("mzClose").addEventListener("click", close);
+  btn.addEventListener("click", function(){
+    if(!inited && !init()){ return; }
+    layer.hidden = false; requestAnimationFrame(fit); fit();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && !layer.hidden){ close(); e.stopPropagation(); }
+  }, true);
+  window.addEventListener("resize", function(){ if(!layer.hidden) fit(); });
 })();
 </script>
 </body>
